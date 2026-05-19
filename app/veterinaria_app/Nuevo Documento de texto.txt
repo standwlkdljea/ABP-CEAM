@@ -1,25 +1,34 @@
--- 1. Crear y seleccionar la Base de Datos limpia
-CREATE DATABASE IF NOT EXISTS vetcuidado_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE vetcuidado_db;
+USE tests;
 
--- 2. Tabla de Mascotas (Guarda los datos del animal y de su dueño en la misma fila)
-CREATE TABLE mascotas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_mascota VARCHAR(50) NOT NULL,        -- <input id="nombre_mascota">
-    tipo_mascota VARCHAR(30) NOT NULL,          -- <select id="tipo_mascota"> (perro, gato, ave...)
-    nombre_dueno VARCHAR(100) NOT NULL         -- <input id="nombre_dueno">
-) ENGINE=InnoDB;
 
--- 3. Tabla de Citas (Guarda los datos de la reserva vinculados a la mascota)
-CREATE TABLE citas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    fecha_cita DATETIME NOT NULL,               -- <input id="fecha_cita"> (Guarda fecha y hora juntas)
-    motivo TEXT NOT NULL,                       -- <textarea id="motivo">
-    id_mascota INT NOT NULL,                    -- Relación con la mascota que se acaba de registrar
-    FOREIGN KEY (id_mascota) REFERENCES mascotas(id) ON DELETE CASCADE ON UPDATE CASCADE
+
+CREATE TABLE IF NOT EXISTS mascotas (
+
+id INT AUTO_INCREMENT PRIMARY KEY,
+
+nombre_mascota VARCHAR(50) NOT NULL,
+
+tipo_mascota VARCHAR(30) NOT NULL,
+
+nombre_dueno VARCHAR(100) NOT NULL
+
 ) ENGINE=InnoDB;
 
 
+
+CREATE TABLE IF NOT EXISTS citas (
+
+id INT AUTO_INCREMENT PRIMARY KEY,
+
+fecha_cita DATETIME NOT NULL,
+
+motivo TEXT NOT NULL,
+
+id_mascota INT NOT NULL,
+
+FOREIGN KEY (id_mascota) REFERENCES mascotas(id) ON DELETE CASCADE ON UPDATE CASCADE
+
+) ENGINE=InnoDB;
 
 
 
