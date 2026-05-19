@@ -18,10 +18,10 @@
         <span>VetCuidado</span>
       </div>
       <nav class="flex space-x-6 font-medium">
-        <a href="index.html" class="text-gray-600 hover:text-cyan-600 transition">Inicio</a>
-        <a href="index.html#servicios" class="text-gray-600 hover:text-cyan-600 transition">Servicios</a>
-        <a href="mascotas.html" class="text-gray-600 hover:text-cyan-600 transition">Mis Mascotas</a>
-        <a href="citas.html"
+        <a href="{{ url_for('home') }}" class="text-gray-600 hover:text-cyan-600 transition">Inicio</a>
+        <a href="{{url_for('home')}}#servicios" class="text-gray-600 hover:text-cyan-600 transition">Servicios</a>
+        <a href="{{url_for('mascotas')}}" class="text-gray-600 hover:text-cyan-600 transition">Mis Mascotas</a>
+        <a href="{{url_for('citas')}}"
           class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Área Cliente</a>
 
       </nav>
@@ -38,7 +38,7 @@
         tus mascotas.
       </p>
       <div class="flex flex-col sm:flex-row justify-center gap-4">
-        <a href="citas.html"
+        <a href="{{url_for('citas')}}"
           class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3 rounded-xl transition shadow-lg text-lg">
           Pedir Cita Online
         </a>
