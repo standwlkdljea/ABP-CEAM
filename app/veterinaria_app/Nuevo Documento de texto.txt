@@ -18,3 +18,38 @@ CREATE TABLE citas (
     id_mascota INT NOT NULL,                    -- Relación con la mascota que se acaba de registrar
     FOREIGN KEY (id_mascota) REFERENCES mascotas(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+
+
+
+
+
+
+USE tests;
+
+-- -----------------------------------------------------
+-- 1. Insert example data into 'mascotas'
+-- -----------------------------------------------------
+INSERT INTO mascotas (nombre_mascota, tipo_mascota, nombre_dueno) VALUES
+('Luna', 'Perro', 'Carlos Daniel Mendoza (CDM)'),
+('Oliver', 'Gato', 'Camila Domínguez Marín (CDM)'),
+('Coco', 'Loro', 'César David Montenegro (CDM)'),
+('Simba', 'Perro', 'Christian Diego Muñiz (CDM)'),
+('Mia', 'Gato', 'Clara De Medina (CDM)');
+
+-- -----------------------------------------------------
+-- 2. Insert example data into 'citas'
+-- -----------------------------------------------------
+
+
+USE tests;
+
+-- Clear out any failed attempts
+TRUNCATE TABLE citas;
+
+-- Insert using subqueries to find the exact ID
+INSERT INTO citas (fecha_cita, motivo, id_mascota) VALUES
+('2026-05-20 09:30:00', 'Vacunación anual. Ref: CDM-01.', (SELECT id FROM mascotas WHERE nombre_mascota = 'Luna' LIMIT 1)),
+('2026-05-20 11:00:00', 'Limpieza dental. Ref: CDM-02.', (SELECT id FROM mascotas WHERE nombre_mascota = 'Oliver' LIMIT 1)),
+('2026-05-21 16:15:00', 'Recorte de plumas. Ref: CDM-03.', (SELECT id FROM mascotas WHERE nombre_mascota = 'Coco' LIMIT 1)),
+('2026-05-22 10:00:00', 'Revisión de cojera. Ref: CDM-04.', (SELECT id FROM mascotas WHERE nombre_mascota = 'Luna' LIMIT 1)),
+('2026-05-23 08:45:00', 'Esterilización. Ref: CDM-05.', (SELECT id FROM mascotas WHERE nombre_mascota = 'Simba' LIMIT 1));
