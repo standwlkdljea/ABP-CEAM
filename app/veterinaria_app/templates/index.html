@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VetCuidado - Clínica Veterinaria</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center">
+      <div class="flex items-center space-x-2 text-cyan-600 font-bold text-2xl mb-4 sm:mb-0">
+        <span>🐾</span>
+        <span>VetCuidado</span>
+      </div>
+      <nav class="flex space-x-6 font-medium">
+        <a href="index.html" class="text-gray-600 hover:text-cyan-600 transition">Inicio</a>
+        <a href="index.html#servicios" class="text-gray-600 hover:text-cyan-600 transition">Servicios</a>
+        <a href="mascotas.html" class="text-gray-600 hover:text-cyan-600 transition">Mis Mascotas</a>
+        <a href="citas.html"
+          class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Área Cliente</a>
+
+      </nav>
+    </div>
+  </header>
+
+  <section class="bg-gradient-to-r from-cyan-500 to-blue-600 text-white py-20 px-4 text-center">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-4xl sm:text-5xl font-extrabold mb-6 leading-tight">
+        El cuidado que tu mejor amigo se merece
+      </h1>
+      <p class="text-lg sm:text-xl mb-8 text-cyan-100">
+        Ofrecemos servicios médicos veterinarios de alta calidad con un equipo apasionado por la salud y bienestar de
+        tus mascotas.
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="citas.html"
+          class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3 rounded-xl transition shadow-lg text-lg">
+          Pedir Cita Online
+        </a>
+        <a href="#servicios"
+          class="bg-white/10 hover:bg-white/20 text-white border border-white/30 font-semibold px-8 py-3 rounded-xl transition text-lg">
+          Ver Servicios
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="servicios" class="container mx-auto px-4 py-16">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">Nuestros Servicios</h2>
+      <p class="text-gray-600 max-w-xl mx-auto">Disponemos de todo lo necesario para garantizar la salud integral de tu
+        mascota en un solo lugar.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition text-center">
+        <div
+          class="w-12 h-12 bg-cyan-100 text-cyan-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
+          🩺</div>
+        <h3 class="text-xl font-bold mb-2 text-gray-800">Consulta General</h3>
+        <p class="text-gray-600 text-sm">Revisiones preventivas, diagnósticos precisos y tratamientos personalizados
+          para cualquier especie.</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition text-center">
+        <div
+          class="w-12 h-12 bg-cyan-100 text-cyan-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
+          💉</div>
+        <h3 class="text-xl font-bold mb-2 text-gray-800">Vacunación y Chips</h3>
+        <p class="text-gray-600 text-sm">Manten al día la cartilla de tu mascota y cumple con la normativa legal de
+          forma rápida y segura.</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition text-center">
+        <div
+          class="w-12 h-12 bg-cyan-100 text-cyan-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
+          🚨</div>
+        <h3 class="text-xl font-bold mb-2 text-gray-800">Urgencias 24/7</h3>
+        <p class="text-gray-600 text-sm">Estamos disponibles a cualquier hora del día para atender cualquier situación
+          crítica de tu compañero.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-gray-900 text-gray-400 py-8 border-t border-gray-800">
+    <div class="container mx-auto px-4 text-center sm:flex sm:justify-between sm:items-center">
+      <p class="text-sm mb-4 sm:mb-0">&copy; 2026 VetCuidado. Proyecto ABP - 1º DAM/DAW.</p>
+      <div class="flex justify-center space-x-6 text-sm">
+        <span class="text-gray-500">Horario: L-V 9:00 - 20:00</span>
+        <span class="text-gray-500">📍 Calle Veterinaria, Nº 12</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
