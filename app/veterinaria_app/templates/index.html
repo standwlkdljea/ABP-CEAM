@@ -22,8 +22,17 @@
         <a href="{{ url_for('home') }}#servicios" class="text-gray-600 hover:text-cyan-600 transition">Servicios</a>
         <a href="{{ url_for('home') }}#equipo" class="text-gray-600 hover:text-cyan-600 transition">Equipo</a>
         <a href="{{ url_for('mascotas') }}" class="text-gray-600 hover:text-cyan-600 transition">Mis Mascotas</a>
+        {% if current_user and current_user.role == 'client' %}
         <a href="{{ url_for('citas') }}"
           class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Área Cliente</a>
+        {% elif current_user and current_user.role == 'staff' %}
+        <a href="{{ url_for('staff_dashboard') }}"
+          class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Panel Staff</a>
+        {% else %}
+        <a href="{{ url_for('login_client') }}"
+          class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Área Cliente</a>
+        {% endif %}
+        class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Área Cliente</a>
       </nav>
     </div>
   </header>

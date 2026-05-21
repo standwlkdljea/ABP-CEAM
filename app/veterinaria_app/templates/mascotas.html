@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VetCuidado - Gestión de Mascotas</title>
+  <title>VetCuidado - Mis Mascotas</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -12,6 +12,7 @@
 <body class="bg-gray-50 text-gray-800 font-sans">
 
   <header class="bg-white shadow-md sticky top-0 z-50">
+    <!-- same header as index, but with dynamic login check -->
     <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center">
       <div class="flex items-center space-x-2 text-cyan-600 font-bold text-2xl mb-4 sm:mb-0">
         <span>🐾</span>
@@ -19,145 +20,63 @@
       </div>
       <nav class="flex space-x-6 font-medium">
         <a href="{{ url_for('home') }}" class="text-gray-600 hover:text-cyan-600 transition">Inicio</a>
-        <a href="{{ url_for('home') }}#servicios" class="text-gray-600 hover:text-cyan-600 transition">Servicios</a>
-        <a href="mascotas.html" class="text-cyan-600 hover:text-cyan-700 transition">Mis Mascotas</a>
-        <a href="{{url_for('citas')}}"
-          class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Área Cliente</a>
+        <a href="{{ url_for('mascotas') }}" class="text-cyan-600 hover:text-cyan-700 transition">Mis Mascotas</a>
+        <a href="{{ url_for('citas') }}"
+          class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Pedir Cita</a>
       </nav>
     </div>
   </header>
 
   <main class="container mx-auto px-4 py-10 max-w-6xl">
-
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Panel de Gestión de Mascotas</h1>
-        <p class="text-gray-600">Administra los pacientes, edita sus datos o registra nuevas altas.</p>
+        <h1 class="text-3xl font-bold text-gray-900">Mis Mascotas</h1>
+        <p class="text-gray-600">Administra los datos de tus animales. Puedes añadir nuevas mascotas o editar las
+          existentes.</p>
       </div>
-      <button
+      <button id="btnAddPet"
         class="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold px-5 py-2.5 rounded-xl transition shadow flex items-center gap-2 cursor-pointer">
         <span>➕</span> Añadir Nueva Mascota
       </button>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8" id="petsContainer">
+      <!-- Rendered by JS from a JSON array passed via Jinja2 -->
+    </div>
 
-      <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="p-6 border-b border-gray-100 bg-gray-50/50">
-          <h2 class="font-bold text-lg text-gray-800">Listado de Pacientes</h2>
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr
-                class="bg-gray-100 text-gray-600 uppercase text-xs font-semibold tracking-wider border-b border-gray-200">
-                <th class="py-4 px-6">ID</th>
-                <th class="py-4 px-6">Nombre</th>
-                <th class="py-4 px-6">Especie / Raza</th>
-                <th class="py-4 px-6">Edad</th>
-                <th class="py-4 px-6 text-center">Acciones</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100 text-sm">
-              <tr class="hover:bg-cyan-50/40 transition">
-                <td class="py-4 px-6 font-mono text-gray-500">#001</td>
-                <td class="py-4 px-6 font-semibold text-gray-900">Rocky</td>
-                <td class="py-4 px-6">Perro (Pastor Alemán)</td>
-                <td class="py-4 px-6">3 años</td>
-                <td class="py-4 px-6 text-center space-x-2">
-                  <button class="text-blue-600 hover:text-blue-800 font-medium cursor-pointer" title="Editar datos">✏️
-                    Editar</button>
-                  <button class="text-red-600 hover:text-red-800 font-medium cursor-pointer"
-                    title="Eliminar del sistema">❌ Borrar</button>
-                </td>
-              </tr>
-              <tr class="hover:bg-cyan-50/40 transition">
-                <td class="py-4 px-6 font-mono text-gray-500">#002</td>
-                <td class="py-4 px-6 font-semibold text-gray-900">Luna</td>
-                <td class="py-4 px-6">Gato (Siamés)</td>
-                <td class="py-4 px-6">1 año</td>
-                <td class="py-4 px-6 text-center space-x-2">
-                  <button class="text-blue-600 hover:text-blue-800 font-medium cursor-pointer" title="Editar datos">✏️
-                    Editar</button>
-                  <button class="text-red-600 hover:text-red-800 font-medium cursor-pointer"
-                    title="Eliminar del sistema">❌ Borrar</button>
-                </td>
-              </tr>
-              <tr class="hover:bg-cyan-50/40 transition">
-                <td class="py-4 px-6 font-mono text-gray-500">#003</td>
-                <td class="py-4 px-6 font-semibold text-gray-900">Copito</td>
-                <td class="py-4 px-6">Conejo (Angora)</td>
-                <td class="py-4 px-6">6 meses</td>
-                <td class="py-4 px-6 text-center space-x-2">
-                  <button class="text-blue-600 hover:text-blue-800 font-medium cursor-pointer" title="Editar datos">✏️
-                    Editar</button>
-                  <button class="text-red-600 hover:text-red-800 font-medium cursor-pointer"
-                    title="Eliminar del sistema">❌ Borrar</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between">
-        <div>
-          <div class="border-b border-gray-100 pb-4 mb-4">
-            <h2 class="font-bold text-lg text-gray-800">Ficha Médica (Detalle)</h2>
-            <p class="text-xs text-gray-500 font-mono">ID seleccionado: #001</p>
+    <!-- Hidden modal for adding a new pet -->
+    <div id="modalAddPet" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40">
+      <div class="bg-white rounded-2xl p-6 w-full max-w-md mx-4">
+        <h2 class="text-xl font-bold mb-4">Registrar nueva mascota</h2>
+        <form id="formAddPet" class="space-y-3">
+          <input type="text" id="petName" placeholder="Nombre"
+            class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm" required>
+          <input type="text" id="petType" placeholder="Tipo (Perro, Gato, Ave...)"
+            class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm" required>
+          <input type="number" id="petAge" placeholder="Edad (años)" min="0"
+            class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm" required>
+          <textarea id="petDesc" placeholder="Descripción / observaciones" rows="2"
+            class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm resize-none"></textarea>
+          <div class="flex justify-end gap-3 pt-2">
+            <button type="button" id="btnCloseModal"
+              class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm">Cancelar</button>
+            <button type="submit"
+              class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl text-sm font-semibold">Guardar</button>
           </div>
-
-          <div class="space-y-4">
-            <div>
-              <label class="block text-xs font-semibold text-gray-400 uppercase">Nombre del Paciente</label>
-              <p class="text-base font-semibold text-gray-900">Rocky</p>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-gray-400 uppercase">Especie</label>
-                <p class="text-sm text-gray-800">Perro</p>
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-gray-400 uppercase">Raza</label>
-                <p class="text-sm text-gray-800">Pastor Alemán</p>
-              </div>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-gray-400 uppercase">Propietario (Dueño)</label>
-              <p class="text-sm text-gray-800 font-medium">Carlos García (ID: #104)</p>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-gray-400 uppercase">Historial / Observaciones</label>
-              <div
-                class="bg-amber-50 border-l-4 border-amber-400 p-3 mt-1 rounded-r-lg text-xs text-amber-900 leading-relaxed">
-                Al día con la vacuna de la rabia. Próxima revisión de control de peso en 3 meses. Sensibilidad estomacal
-                leve.
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-8 pt-4 border-t border-gray-100">
-          <button
-            class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 rounded-xl transition text-sm cursor-pointer">
-            🖨️ Imprimir Historial Clínico
-          </button>
-        </div>
+        </form>
       </div>
-
     </div>
   </main>
 
   <footer class="bg-gray-900 text-gray-400 py-8 border-t border-gray-800 mt-20">
-    <div class="container mx-auto px-4 text-center sm:flex sm:justify-between sm:items-center">
-      <p class="text-sm mb-4 sm:mb-0">&copy; 2026 VetCuidado. Proyecto ABP - 1º DAM/DAW.</p>
-      <div class="flex justify-center space-x-6 text-sm">
-        <span class="text-gray-500">Módulo: Lenguaje de Marcas / Programación</span>
-      </div>
-    </div>
+    <div class="container mx-auto px-4 text-center text-sm">&copy; 2026 VetCuidado</div>
   </footer>
 
+  <script>
+    const petsData = {{pets | tojson | safe }};
+    // Render pets list
+  </script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 
 </html>

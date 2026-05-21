@@ -1,50 +1,125 @@
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("¡JavaScript enlazado con éxito a citas.html!");
+  // ==============  PET MANAGEMENT (mascotas.html) ==============
+  const petsContainer = document.getElementById('petsContainer');
+  if (petsContainer) {
+    if (typeof petsData === 'undefined') {
+      console.warn('No pets data provided');
+      return;
+    }
+    renderPets(petsData);
 
+    const modal = document.getElementById('modalAddPet');
+    document.getElementById('btnAddPet')?.addEventListener('click', () => modal.classList.remove('hidden'));
+    document.getElementById('btnCloseModal')?.addEventListener('click', () => modal.classList.add('hidden'));
+
+    document.getElementById('formAddPet')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = {
+        nombre_mascota: document.getElementById('petName').value,
+        tipo_mascota: document.getElementById('petType').value,
+        edad: document.getElementById('petAge').value,
+        descripcion: document.getElementById('petDesc').value
+      };
+      try {
+        const res = await fetch('/api/pets', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (res.ok) {
+          const updated = await fetch('/api/pets');
+          const pets = await updated.json();
+          renderPets(pets);
+          modal.classList.add('hidden');
+          e.target.reset();
+        } else {
+          alert('Error al agregar mascota');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error de conexión');
+      }
+    });
+
+    window.deletePet = async (petId) => {
+      if (!confirm('¿Eliminar esta mascota?')) return;
+      const res = await fetch(`/api/pets/${petId}`, { method: 'DELETE' });
+      if (res.ok) {
+        const updated = await fetch('/api/pets');
+        const pets = await updated.json();
+        renderPets(pets);
+      } else {
+        alert('No se pudo eliminar');
+      }
+    };
+  }
+
+  function renderPets(pets) {
+    if (!petsContainer) return;
+    let html = '';
+    if (pets.length === 0) {
+      html = `<div class="col-span-full text-center py-16 text-gray-500">Aún no has registrado mascotas.</div>`;
+    } else {
+      pets.forEach(pet => {
+        html += `
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between">
+            <div>
+              <h3 class="text-xl font-bold text-gray-900">${pet.nombre_mascota}</h3>
+              <p class="text-gray-500 text-sm mt-1">${pet.tipo_mascota}, ${pet.edad} años</p>
+              <p class="text-gray-600 text-sm mt-2">${pet.descripcion || 'Sin descripción'}</p>
+            </div>
+            <div class="mt-4 flex justify-end gap-2">
+              <button onclick="deletePet(${pet.id})" class="text-red-600 hover:text-red-800 text-sm font-medium">🗑️ Eliminar</button>
+            </div>
+          </div>`;
+      });
+    }
+    petsContainer.innerHTML = html;
+  }
+
+  // ==============  BOOKING FORM (citas.html) ==============
   const formCita = document.getElementById('formCita');
-
   if (formCita) {
     formCita.addEventListener('submit', async (event) => {
       event.preventDefault();
-      const dueno = document.getElementById('nombre_dueno').value;
-      const mascota = document.getElementById('nombre_mascota').value;
-      const especie = document.getElementById('tipo_mascota').value;
-      const fecha = document.getElementById('fecha_cita').value;
-      const motivoConsulta = document.getElementById('motivo').value;
+      const pet_id = document.getElementById('pet_id').value;
+      const service_id = document.getElementById('service_id').value;
+      const start_time = document.getElementById('start_time').value;
+      const motivo = document.getElementById('motivo').value.trim();
 
+      if (!pet_id || !service_id || !start_time || !motivo) {
+        alert('Todos los campos son obligatorios');
+        return;
+      }
 
-      const datosCita = {
-        nombre_dueno: dueno,
-        dni_dueno: document.getElementById('dni_dueno').value,
-        email_dueno: document.getElementById('email_dueno').value,
-        nombre_mascota: mascota,
-        tipo_mascota: especie,
-        fecha_cita: fecha,
-        motivo: motivoConsulta
+      const payload = {
+        pet_id: parseInt(pet_id),
+        service_id: parseInt(service_id),
+        start_time: start_time,
+        motivo: motivo
       };
-
-      console.log("Enviando datos de la cita al backend:", datosCita);
 
       try {
         const response = await fetch('/api/citas', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(datosCita)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
         });
 
         if (response.status === 201) {
-          alert("¡Cita agendada de forma rápida y segura! Nos vemos pronto. 🐾");
-          formCita.reset(); // Limpia el formulario
+          alert('¡Cita agendada correctamente! 🐾');
+          formCita.reset();
         } else if (response.status === 400) {
-          alert("Error 400: Los datos enviados son incorrectos.");
+          const err = await response.json();
+          alert('Error: ' + (err.message || 'Datos incorrectos'));
+        } else if (response.status === 401) {
+          alert('Debes iniciar sesión como cliente.');
         } else {
-          alert("Error " + response.status + ": No se pudo guardar la cita.");
+          alert('Error inesperado');
         }
       } catch (error) {
-        console.error("Error crítico de comunicación con la API:", error);
-        alert("No se pudo conectar con el servidor backend.");
+        console.error(error);
+        alert('Error de conexión con el servidor');
       }
     });
   }
