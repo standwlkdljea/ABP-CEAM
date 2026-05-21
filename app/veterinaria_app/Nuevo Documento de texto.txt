@@ -3,23 +3,16 @@ USE tests;
 
 
 CREATE TABLE IF NOT EXISTS mascotas (
-
 id INT AUTO_INCREMENT PRIMARY KEY,
-
 nombre_mascota VARCHAR(50) NOT NULL,
-
 tipo_mascota VARCHAR(30) NOT NULL,
-
 nombre_dueno VARCHAR(100) NOT NULL
-
 ) ENGINE=InnoDB;
 
 
 
 CREATE TABLE IF NOT EXISTS citas (
-
 id INT AUTO_INCREMENT PRIMARY KEY,
-
 fecha_cita DATETIME NOT NULL,
 
 motivo TEXT NOT NULL,
