@@ -1,0 +1,95 @@
+-- Database: vetcuidado_db
+USE vetcuidado_db;
+
+-- Clients
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_completo VARCHAR(100) NOT NULL,
+    dni VARCHAR(20) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    telefono VARCHAR(20) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Services (specialities with duration)
+CREATE TABLE servicios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL UNIQUE,
+    duracion_minutos SMALLINT NOT NULL CHECK (duracion_minutos > 0),
+    descripcion TEXT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Staff (vets) – each linked to a service
+CREATE TABLE doctores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_doctor VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    servicio_id INT NOT NULL,
+    estado ENUM('libre', 'ocupado') DEFAULT 'libre',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (servicio_id) REFERENCES servicios(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Pets
+CREATE TABLE mascotas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_mascota VARCHAR(50) NOT NULL,
+    tipo_mascota VARCHAR(30) NOT NULL,
+    edad INT NOT NULL,
+    descripcion TEXT,
+    id_usuario INT NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Appointments
+CREATE TABLE citas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    inicio DATETIME NOT NULL,
+    fin DATETIME NOT NULL,
+    motivo TEXT NOT NULL,
+    servicio_id INT NOT NULL,
+    id_mascota INT NOT NULL,
+    id_doctor INT NOT NULL,
+    estado ENUM('programada', 'completada', 'cancelada') DEFAULT 'programada',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (servicio_id) REFERENCES servicios(id),
+    FOREIGN KEY (id_mascota) REFERENCES mascotas(id),
+    FOREIGN KEY (id_doctor) REFERENCES doctores(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Clinic working hours (0=Monday ... 6=Sunday)
+CREATE TABLE horarios_trabajo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    dia_semana TINYINT NOT NULL UNIQUE CHECK (dia_semana BETWEEN 0 AND 6),
+    hora_apertura TIME NOT NULL,
+    hora_cierre TIME NOT NULL,
+    CHECK (hora_apertura < hora_cierre)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Configurations (buffer before closing)
+CREATE TABLE configuraciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    clave VARCHAR(50) NOT NULL UNIQUE,
+    valor VARCHAR(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Insert default buffer
+INSERT INTO configuraciones (clave, valor) VALUES ('buffer_reserva_minutos', '60');
+
+-- Insert sample services and working hours (adjust as needed)
+INSERT INTO servicios (nombre, duracion_minutos) VALUES 
+    ('Consulta General', 30),
+    ('Vacunación / Chips', 20),
+    ('Análisis Clínicos', 45),
+    ('Cirugía', 90),
+    ('Diagnóstico por Imagen', 40);
+
+INSERT INTO horarios_trabajo (dia_semana, hora_apertura, hora_cierre) VALUES
+    (0, '09:00', '18:00'),
+    (1, '09:00', '18:00'),
+    (2, '09:00', '18:00'),
+    (3, '09:00', '18:00'),
+    (4, '09:00', '18:00'),
+    (5, '09:00', '14:00'); -- Saturday, closed Sunday
