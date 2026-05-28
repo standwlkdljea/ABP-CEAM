@@ -22,7 +22,7 @@
     </div>
     {% endif %}
     {% endwith %}
-    <form method="POST" action="{{ url_for('login_client') }}" class="space-y-4">
+    <form method="POST" action="{{ url_for('auth.login_client') }}" class="space-y-4">
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-1">Correo electrónico</label>
         <input type="email" name="email" required
@@ -38,7 +38,7 @@
         Sesión</button>
     </form>
     <p class="text-center text-sm text-gray-500 mt-4">
-      ¿No tienes cuenta? <a href="{{ url_for('register_client') }}" class="text-cyan-600 font-semibold">Regístrate</a>
+      ¿No tienes cuenta? <a href="{{ url_for('auth.register_client') }}" class="text-cyan-600 font-semibold">Regístrate</a>
     </p>
   </div>
 </body>

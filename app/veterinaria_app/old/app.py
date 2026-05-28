@@ -63,7 +63,7 @@ def procesar_login():
 @app.route("/logout")
 def logout():
     session.clear() # Limpia la sesión por completo al salir
-    return redirect(url_for('home'))
+    return redirect(url_for('auth.home'))
 
 # =========================================================================
 # VISTAS PÚBLICAS Y PROTEGIDAS

@@ -17,7 +17,7 @@
       </div>
       <nav class="flex items-center gap-4 font-medium">
         <span class="text-sm text-gray-500">Dr(a). {{ current_user.full_name }}</span>
-        <a href="{{ url_for('logout') }}" class="text-gray-600 hover:text-cyan-600 transition">Cerrar Sesión</a>
+        <a href="{{ url_for('auth.logout') }}" class="text-gray-600 hover:text-cyan-600 transition">Cerrar Sesión</a>
       </nav>
     </div>
   </header>
@@ -25,7 +25,7 @@
   <main class="container mx-auto px-4 py-10 max-w-4xl">
     <div class="flex items-center justify-between mb-8">
       <h1 class="text-3xl font-bold text-gray-900">Mis Citas Asignadas</h1>
-      <form method="POST" action="{{ url_for('toggle_status') }}">
+      <form method="POST" action="{{ url_for('staff.toggle_status') }}">
         <button type="submit" class="px-5 py-2.5 rounded-xl font-semibold text-sm transition shadow
           {% if current_user.estado == 'libre' %}
             bg-emerald-500 hover:bg-emerald-600 text-white

@@ -33,7 +33,7 @@ def dashboard():
         # Eager loading may help but for simplicity:
         _ = appt.mascota, appt.mascota.owner, appt.servicio
 
-    return render_template("staff_dashboard.html", appointments=appointments)
+    return render_template("dashboard.html", appointments=appointments)
 
 
 @staff_blueprint.route("/toggle-status", methods=["POST"])

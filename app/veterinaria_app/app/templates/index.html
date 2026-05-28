@@ -18,18 +18,18 @@
         <span>VetCuidado</span>
       </div>
       <nav class="flex space-x-6 font-medium">
-        <a href="{{ url_for('home') }}" class="text-cyan-600 hover:text-cyan-700 transition">Inicio</a>
-        <a href="{{ url_for('home') }}#servicios" class="text-gray-600 hover:text-cyan-600 transition">Servicios</a>
-        <a href="{{ url_for('home') }}#equipo" class="text-gray-600 hover:text-cyan-600 transition">Equipo</a>
-        <a href="{{ url_for('mascotas') }}" class="text-gray-600 hover:text-cyan-600 transition">Mis Mascotas</a>
+        <a href="{{ url_for('auth.home') }}" class="text-cyan-600 hover:text-cyan-700 transition">Inicio</a>
+        <a href="{{ url_for('auth.home') }}#servicios" class="text-gray-600 hover:text-cyan-600 transition">Servicios</a>
+        <a href="{{ url_for('auth.home') }}#equipo" class="text-gray-600 hover:text-cyan-600 transition">Equipo</a>
+        <a href="{{ url_for('client.mascotas') }}" class="text-gray-600 hover:text-cyan-600 transition">Mis Mascotas</a>
         {% if current_user and current_user.role == 'client' %}
-        <a href="{{ url_for('citas') }}"
+        <a href="{{ url_for('client.citas') }}"
           class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Área Cliente</a>
         {% elif current_user and current_user.role == 'staff' %}
-        <a href="{{ url_for('staff_dashboard') }}"
+        <a href="{{ url_for('staff.dashboard') }}"
           class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Panel Staff</a>
         {% else %}
-        <a href="{{ url_for('login_client') }}"
+        <a href="{{ url_for('auth.login_client') }}"
           class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Área Cliente</a>
         {% endif %}
         class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Área Cliente</a>
@@ -56,7 +56,7 @@
         tus mascotas.
       </p>
       <div class="flex flex-col sm:flex-row gap-4">
-        <a href="{{ url_for('citas') }}"
+        <a href="{{ url_for('client.citas') }}"
           class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3 rounded-xl transition shadow-lg text-lg text-center">Pedir
           Cita Online</a>
         <a href="#servicios"
@@ -178,7 +178,7 @@
       <h2 class="text-3xl sm:text-4xl font-extrabold mb-4">¿Tu mascota necesita atención?</h2>
       <p class="text-cyan-200 text-lg mb-8 max-w-xl mx-auto">Pide cita ahora y uno de nuestros especialistas te atenderá
         lo antes posible.</p>
-      <a href="{{ url_for('citas') }}"
+      <a href="{{ url_for('client.citas') }}"
         class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-10 py-4 rounded-xl transition shadow-lg text-lg inline-block">Solicitar
         cita online</a>
     </div>

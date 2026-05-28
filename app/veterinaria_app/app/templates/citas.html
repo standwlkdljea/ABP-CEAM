@@ -18,9 +18,9 @@
         <span>VetCuidado</span>
       </div>
       <nav class="flex space-x-6 font-medium">
-        <a href="{{ url_for('home') }}" class="text-gray-600 hover:text-cyan-600 transition">Inicio</a>
-        <a href="{{ url_for('mascotas') }}" class="text-gray-600 hover:text-cyan-600 transition">Mis Mascotas</a>
-        <a href="{{ url_for('citas') }}"
+        <a href="{{ url_for('auth.home') }}" class="text-gray-600 hover:text-cyan-600 transition">Inicio</a>
+        <a href="{{ url_for('client.mascotas') }}" class="text-gray-600 hover:text-cyan-600 transition">Mis Mascotas</a>
+        <a href="{{ url_for('client.citas') }}"
           class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Pedir Cita</a>
       </nav>
     </div>
@@ -45,7 +45,7 @@
             <option value="{{ pet.id }}">{{ pet.nombre_mascota }} ({{ pet.tipo_mascota }}, {{ pet.edad }} años)</option>
             {% endfor %}
           </select>
-          <p class="text-xs text-gray-400 mt-1">¿Mascota nueva? <a href="{{ url_for('mascotas') }}"
+          <p class="text-xs text-gray-400 mt-1">¿Mascota nueva? <a href="{{ url_for('client.mascotas') }}"
               class="text-cyan-600 underline">Añádela aquí</a> antes de continuar.</p>
         </div>
 
