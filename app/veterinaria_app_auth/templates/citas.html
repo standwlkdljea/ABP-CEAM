@@ -13,21 +13,58 @@
 
   <header class="bg-white shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center">
-      <div class="flex items-center space-x-2 text-cyan-600 font-bold text-2xl mb-4 sm:mb-0">
-        <span>🐾</span>
-        <span>VetCuidado</span>
-      </div>
-      <nav class="flex space-x-6 font-medium">
+      <a href="{{ url_for('home') }}" class="flex items-center space-x-2 text-cyan-600 font-bold text-2xl mb-4 sm:mb-0">
+        <span>🐾</span><span>VetCuidado</span>
+      </a>
+      <nav class="flex items-center space-x-6 font-medium">
         <a href="{{ url_for('home') }}" class="text-gray-600 hover:text-cyan-600 transition">Inicio</a>
         <a href="{{ url_for('home') }}#servicios" class="text-gray-600 hover:text-cyan-600 transition">Servicios</a>
         <a href="{{ url_for('mascotas') }}" class="text-gray-600 hover:text-cyan-600 transition">Mis Mascotas</a>
-        <a href="{{url_for('citas')}}"
-          class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Área Cliente</a>
+
+        {% if current_user.is_authenticated %}
+          <div class="flex items-center gap-3">
+            <a href="{{ url_for('citas') }}" class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Área Cliente</a>
+            <div class="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
+              <span class="text-cyan-600">👤</span>
+              <span class="text-sm font-semibold text-gray-700">{{ current_user.nombre.split()[0] }}</span>
+              <a href="{{ url_for('logout') }}" class="text-xs text-gray-400 hover:text-red-500 transition ml-1" title="Cerrar sesión">✕</a>
+            </div>
+          </div>
+        {% else %}
+          <div class="flex items-center gap-2">
+            <a href="{{ url_for('login') }}" class="text-gray-600 hover:text-cyan-600 transition">Iniciar sesión</a>
+            <a href="{{ url_for('register') }}" class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Registrarse</a>
+          </div>
+        {% endif %}
       </nav>
     </div>
   </header>
 
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="container mx-auto px-4 pt-6 max-w-xl">
+        {% for category, message in messages %}
+          <div class="flex items-start gap-3 px-4 py-3 rounded-xl text-sm font-medium mb-2
+            {% if category == 'error' %}bg-red-50 border border-red-200 text-red-800
+            {% else %}bg-emerald-50 border border-emerald-200 text-emerald-800{% endif %}">
+            <span>{% if category == 'error' %}⚠️{% else %}✅{% endif %}</span>
+            <span>{{ message }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
   <main class="container mx-auto px-4 py-12 max-w-xl">
+
+    <!-- Aviso de sesión activa -->
+    {% if current_user.is_authenticated %}
+    <div class="flex items-center gap-3 bg-cyan-50 border border-cyan-100 rounded-xl px-4 py-3 mb-6 text-sm text-cyan-800">
+      <span>👋</span>
+      <span>Hola, <strong>{{ current_user.nombre }}</strong>. Rellena el formulario para reservar tu cita.</span>
+    </div>
+    {% endif %}
 
     <div class="text-center mb-8">
       <h1 class="text-3xl font-bold text-gray-900 mb-2">Solicitar Cita Médica</h1>
@@ -41,7 +78,9 @@
           <label for="nombre_dueno" class="block text-sm font-semibold text-gray-700 mb-2">Nombre Completo del Propietario</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">👤</span>
-            <input type="text" id="nombre_dueno" name="nombre_dueno" required placeholder="Ej. Carlos García López"
+            <input type="text" id="nombre_dueno" name="nombre_dueno" required
+              value="{{ current_user.nombre }}"
+              placeholder="Ej. Carlos García López"
               class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:bg-white transition text-sm">
           </div>
         </div>
@@ -59,7 +98,9 @@
             <label for="email_dueno" class="block text-sm font-semibold text-gray-700 mb-2">Correo Electrónico</label>
             <div class="relative">
               <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">✉️</span>
-              <input type="email" id="email_dueno" name="email_dueno" required placeholder="Ej. andrea@gmail.com"
+              <input type="email" id="email_dueno" name="email_dueno" required
+                value="{{ current_user.email }}"
+                placeholder="Ej. andrea@gmail.com"
                 class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:bg-white transition text-sm">
             </div>
           </div>
@@ -128,5 +169,4 @@
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
-
 </html>

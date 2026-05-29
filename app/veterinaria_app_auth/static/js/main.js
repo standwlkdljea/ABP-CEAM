@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("¡JavaScript enlazado con éxito a citas.html!");
+    console.log("¡JavaScript de VetCuidado cargado correctamente!");
 
     const formCita = document.getElementById('formCita');
 
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (response.status === 201) {
                     alert("¡Cita agendada de forma rápida y segura! Nos vemos pronto. 🐾");
-                    formCita.reset(); // Limpia el formulario
+                    formCita.reset(); 
                 } else if (response.status === 400) {
                     alert("Error 400: Los datos enviados son incorrectos.");
                 } else {
@@ -45,4 +45,37 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+ 
+    document.addEventListener('click', async (event) => {
+        const botonBorrar = event.target.closest('.btn-borrar');
+        
+        if (botonBorrar) {
+            const clienteId = botonBorrar.getAttribute('data-id');
+            // Localizamos la fila completa de la tabla para eliminarla después
+            const filaTabla = botonBorrar.closest('tr');
+
+            const seguro = confirm(`¿Estás seguro de que deseas eliminar al cliente #${clienteId}? Esta acción no se puede deshacer.`);
+            
+            if (!seguro) return; // Si cancela, no hacemos nada
+
+            console.log(`Solicitando al backend la eliminación del cliente ID: ${clienteId}`);
+
+            try {
+                const response = await fetch(`/api/clientes/${clienteId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    filaTabla.remove();
+                    alert("Usuario eliminado correctamente del sistema y de la base de datos. 🗑️");
+                } else {
+                    alert(`Error ${response.status}: No se pudo eliminar al usuario.`);
+                }
+            } catch (error) {
+                console.error("Error al intentar comunicar con la API de borrado:", error);
+                alert("Hubo un error de conexión con el servidor backend.");
+            }
+        }
+    });
 });
