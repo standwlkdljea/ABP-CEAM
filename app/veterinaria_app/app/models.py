@@ -56,6 +56,9 @@ class Doctor(UserMixin, db.Model):
         return "staff"
 
 
+    
+
+
 class Mascota(db.Model):
     __tablename__ = "mascotas"
     id = db.Column(db.Integer, primary_key=True)

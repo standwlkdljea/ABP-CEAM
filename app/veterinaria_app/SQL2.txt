@@ -93,3 +93,166 @@ INSERT INTO horarios_trabajo (dia_semana, hora_apertura, hora_cierre) VALUES
     (3, '09:00', '18:00'),
     (4, '09:00', '18:00'),
     (5, '09:00', '14:00'); -- Saturday, closed Sunday
+
+
+
+
+-- Populate
+
+USE vetcuidado_db;
+
+-- --------------------------------------------------------
+-- 1. USUARIOS (Clients)
+-- --------------------------------------------------------
+-- Inserting 5 realistic clients with dummy bcrypt password hashes
+INSERT INTO usuarios (nombre_completo, dni, email, password_hash, telefono) VALUES
+('Carlos Martínez', '12345678A', 'carlos.m@ejemplo.com', '$2y$10$dummyhash1234567890abcdef', '600123456'),
+('Laura Gómez', '87654321B', 'laura.gomez@ejemplo.com', '$2y$10$dummyhash1234567890abcdef', '611987654'),
+('Miguel Fernández', '11223344C', 'm.fernandez@ejemplo.com', '$2y$10$dummyhash1234567890abcdef', '622112233'),
+('Elena Navarro', '44332211D', 'elena.nav@ejemplo.com', '$2y$10$dummyhash1234567890abcdef', '633445566'),
+('Roberto Ruiz', '55667788E', 'r.ruiz@ejemplo.com', '$2y$10$dummyhash1234567890abcdef', '644778899');
+
+-- --------------------------------------------------------
+-- 2. SERVICIOS (Extra Services)
+-- --------------------------------------------------------
+-- Assuming IDs 1-5 were already inserted from your prompt.
+-- Adding a couple more specialized services.
+INSERT INTO servicios (nombre, duracion_minutos, descripcion) VALUES
+('Peluquería Canina/Felina', 60, 'Servicio de baño, corte de pelo, uñas y glándulas.'),
+('Odontología', 45, 'Limpieza bucal por ultrasonidos y extracciones dentales.');
+
+-- --------------------------------------------------------
+-- 3. DOCTORES (Vets & Staff)
+-- --------------------------------------------------------
+-- Linking doctors to the services (IDs 1 to 5 from your initial inserts)
+INSERT INTO doctores (nombre_doctor, email, password_hash, servicio_id, estado) VALUES
+('Dra. Ana López', 'ana.lopez@vetcuidado.com', '$2y$10$dummyhash1234567890abcdef', 1, 'libre'),      -- Consulta General
+('Dr. Jorge Sanis', 'jorge.sanis@vetcuidado.com', '$2y$10$dummyhash1234567890abcdef', 2, 'libre'),     -- Vacunación
+('Dra. Marta Díaz', 'marta.diaz@vetcuidado.com', '$2y$10$dummyhash1234567890abcdef', 3, 'ocupado'),    -- Análisis Clínicos
+('Dr. Pedro Sánchez', 'pedro.sanchez@vetcuidado.com', '$2y$10$dummyhash1234567890abcdef', 4, 'libre'), -- Cirugía
+('Dra. Carmen Ríos', 'carmen.rios@vetcuidado.com', '$2y$10$dummyhash1234567890abcdef', 5, 'libre');    -- Diagnóstico por Imagen
+
+-- --------------------------------------------------------
+-- 4. MASCOTAS (Pets)
+-- --------------------------------------------------------
+-- Linking pets to the users created above (IDs 1 to 5)
+INSERT INTO mascotas (nombre_mascota, tipo_mascota, edad, descripcion, id_usuario) VALUES
+('Rex', 'Perro', 5, 'Pastor Alemán. Muy enérgico, alérgico al pollo.', 1),
+('Luna', 'Gato', 3, 'Gata siamesa. Esterilizada.', 1),
+('Toby', 'Perro', 2, 'Cocker Spaniel. Orejas propensas a infecciones.', 2),
+('Milo', 'Gato', 1, 'Gato común europeo. Rescatado de la calle.', 3),
+('Kira', 'Perro', 7, 'Labrador Retriever. Presenta displasia de cadera leve.', 4),
+('Nemo', 'Pez', 1, 'Pez payaso en acuario de agua salada.', 4),
+('Coco', 'Loro', 10, 'Loro gris africano. Requiere revisión de pico y uñas.', 5);
+
+-- --------------------------------------------------------
+-- 5. CITAS (Appointments)
+-- --------------------------------------------------------
+-- Creating appointments scheduled for early June 2026.
+-- Ensuring that 'inicio' + 'duracion_minutos' matches the 'fin' time.
+-- Also ensuring the doctor's 'servicio_id' matches the appointment's 'servicio_id'.
+INSERT INTO citas (inicio, fin, motivo, servicio_id, id_mascota, id_doctor, estado) VALUES
+-- Consulta General (30 mins) with Dra. Ana López (Doc 1, Svc 1) for Rex (Pet 1)
+('2026-06-02 10:00:00', '2026-06-02 10:30:00', 'Chequeo general anual', 1, 1, 1, 'programada'),
+
+-- Vacunación (20 mins) with Dr. Jorge Sanis (Doc 2, Svc 2) for Luna (Pet 2)
+('2026-06-02 11:00:00', '2026-06-02 11:20:00', 'Vacuna trivalente felina', 2, 2, 2, 'programada'),
+
+-- Análisis Clínicos (45 mins) with Dra. Marta Díaz (Doc 3, Svc 3) for Kira (Pet 5)
+('2026-06-03 09:15:00', '2026-06-03 10:00:00', 'Análisis de sangre para control de medicación', 3, 5, 3, 'completada'),
+
+-- Cirugía (90 mins) with Dr. Pedro Sánchez (Doc 4, Svc 4) for Toby (Pet 3)
+('2026-06-04 12:00:00', '2026-06-04 13:30:00', 'Esterilización', 4, 3, 4, 'programada'),
+
+-- Diagnóstico por Imagen (40 mins) with Dra. Carmen Ríos (Doc 5, Svc 5) for Rex (Pet 1)
+('2026-06-05 16:00:00', '2026-06-05 16:40:00', 'Radiografía de cadera por cojera', 5, 1, 5, 'cancelada');
+
+-- --------------------------------------------------------
+-- 6. CONFIGURACIONES (System Settings)
+-- --------------------------------------------------------
+-- Adding additional system configurations for the clinic
+INSERT INTO configuraciones (clave, valor) VALUES
+('recordatorio_cita_horas', '24'),
+('max_citas_dia_doctor', '15'),
+('email_contacto_clinica', 'info@vetcuidado.com');
+
+
+
+-- Populate
+
+USE vetcuidado_db;
+
+-- --------------------------------------------------------
+-- 1. USUARIOS (Clients)
+-- --------------------------------------------------------
+-- Inserting 5 realistic clients with dummy bcrypt password hashes
+INSERT INTO usuarios (nombre_completo, dni, email, password_hash, telefono) VALUES
+('Carlos Martínez', '12345678A', 'carlos.m@ejemplo.com', '$2y$10$dummyhash1234567890abcdef', '600123456'),
+('Laura Gómez', '87654321B', 'laura.gomez@ejemplo.com', '$2y$10$dummyhash1234567890abcdef', '611987654'),
+('Miguel Fernández', '11223344C', 'm.fernandez@ejemplo.com', '$2y$10$dummyhash1234567890abcdef', '622112233'),
+('Elena Navarro', '44332211D', 'elena.nav@ejemplo.com', '$2y$10$dummyhash1234567890abcdef', '633445566'),
+('Roberto Ruiz', '55667788E', 'r.ruiz@ejemplo.com', '$2y$10$dummyhash1234567890abcdef', '644778899');
+
+-- --------------------------------------------------------
+-- 2. SERVICIOS (Extra Services)
+-- --------------------------------------------------------
+-- Assuming IDs 1-5 were already inserted from your prompt.
+-- Adding a couple more specialized services.
+INSERT INTO servicios (nombre, duracion_minutos, descripcion) VALUES
+('Peluquería Canina/Felina', 60, 'Servicio de baño, corte de pelo, uñas y glándulas.'),
+('Odontología', 45, 'Limpieza bucal por ultrasonidos y extracciones dentales.');
+
+-- --------------------------------------------------------
+-- 3. DOCTORES (Vets & Staff)
+-- --------------------------------------------------------
+-- Linking doctors to the services (IDs 1 to 5 from your initial inserts)
+INSERT INTO doctores (nombre_doctor, email, password_hash, servicio_id, estado) VALUES
+('Dra. Ana López', 'ana.lopez@vetcuidado.com', '$2y$10$dummyhash1234567890abcdef', 1, 'libre'),      -- Consulta General
+('Dr. Jorge Sanis', 'jorge.sanis@vetcuidado.com', '$2y$10$dummyhash1234567890abcdef', 2, 'libre'),     -- Vacunación
+('Dra. Marta Díaz', 'marta.diaz@vetcuidado.com', '$2y$10$dummyhash1234567890abcdef', 3, 'ocupado'),    -- Análisis Clínicos
+('Dr. Pedro Sánchez', 'pedro.sanchez@vetcuidado.com', '$2y$10$dummyhash1234567890abcdef', 4, 'libre'), -- Cirugía
+('Dra. Carmen Ríos', 'carmen.rios@vetcuidado.com', '$2y$10$dummyhash1234567890abcdef', 5, 'libre');    -- Diagnóstico por Imagen
+
+-- --------------------------------------------------------
+-- 4. MASCOTAS (Pets)
+-- --------------------------------------------------------
+-- Linking pets to the users created above (IDs 1 to 5)
+INSERT INTO mascotas (nombre_mascota, tipo_mascota, edad, descripcion, id_usuario) VALUES
+('Rex', 'Perro', 5, 'Pastor Alemán. Muy enérgico, alérgico al pollo.', 1),
+('Luna', 'Gato', 3, 'Gata siamesa. Esterilizada.', 1),
+('Toby', 'Perro', 2, 'Cocker Spaniel. Orejas propensas a infecciones.', 2),
+('Milo', 'Gato', 1, 'Gato común europeo. Rescatado de la calle.', 3),
+('Kira', 'Perro', 7, 'Labrador Retriever. Presenta displasia de cadera leve.', 4),
+('Nemo', 'Pez', 1, 'Pez payaso en acuario de agua salada.', 4),
+('Coco', 'Loro', 10, 'Loro gris africano. Requiere revisión de pico y uñas.', 5);
+
+-- --------------------------------------------------------
+-- 5. CITAS (Appointments)
+-- --------------------------------------------------------
+-- Creating appointments scheduled for early June 2026.
+-- Ensuring that 'inicio' + 'duracion_minutos' matches the 'fin' time.
+-- Also ensuring the doctor's 'servicio_id' matches the appointment's 'servicio_id'.
+INSERT INTO citas (inicio, fin, motivo, servicio_id, id_mascota, id_doctor, estado) VALUES
+-- Consulta General (30 mins) with Dra. Ana López (Doc 1, Svc 1) for Rex (Pet 1)
+('2026-06-02 10:00:00', '2026-06-02 10:30:00', 'Chequeo general anual', 1, 1, 1, 'programada'),
+
+-- Vacunación (20 mins) with Dr. Jorge Sanis (Doc 2, Svc 2) for Luna (Pet 2)
+('2026-06-02 11:00:00', '2026-06-02 11:20:00', 'Vacuna trivalente felina', 2, 2, 2, 'programada'),
+
+-- Análisis Clínicos (45 mins) with Dra. Marta Díaz (Doc 3, Svc 3) for Kira (Pet 5)
+('2026-06-03 09:15:00', '2026-06-03 10:00:00', 'Análisis de sangre para control de medicación', 3, 5, 3, 'completada'),
+
+-- Cirugía (90 mins) with Dr. Pedro Sánchez (Doc 4, Svc 4) for Toby (Pet 3)
+('2026-06-04 12:00:00', '2026-06-04 13:30:00', 'Esterilización', 4, 3, 4, 'programada'),
+
+-- Diagnóstico por Imagen (40 mins) with Dra. Carmen Ríos (Doc 5, Svc 5) for Rex (Pet 1)
+('2026-06-05 16:00:00', '2026-06-05 16:40:00', 'Radiografía de cadera por cojera', 5, 1, 5, 'cancelada');
+
+-- --------------------------------------------------------
+-- 6. CONFIGURACIONES (System Settings)
+-- --------------------------------------------------------
+-- Adding additional system configurations for the clinic
+INSERT INTO configuraciones (clave, valor) VALUES
+('recordatorio_cita_horas', '24'),
+('max_citas_dia_doctor', '15'),
+('email_contacto_clinica', 'info@vetcuidado.com');
