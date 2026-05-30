@@ -10,11 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
         fechaInput.addEventListener('change', async () => {
             const val = fechaInput.value;
             if (!val) return;
-            const fecha = val.split('T')[0];
+            const fecha = val.split('T')[0]; // Extrae la fecha sin hora
             try {
-                const resp = await fetch(`/citas/api/horario?fecha=${fecha}`);
+                const resp = await fetch(`/citas/api/horario?fecha=${fecha}`); 
                 const data = await resp.json();
-                horarioInfo.classList.remove('hidden');
+                horarioInfo.classList.remove('hidden'); // Muestra el elemento
                 if (data.laboral) {
                     horarioInfo.textContent = `🕐 Horario: ${data.hora_apertura} – ${data.hora_cierre}`;
                     horarioInfo.className = 'text-xs text-emerald-600 mt-1';
@@ -23,7 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     horarioInfo.className = 'text-xs text-red-500 mt-1';
                 }
             } catch {
-                horarioInfo.classList.add('hidden');
+                horarioInfo.classList.add('hidden'); // Oculta el elemento cuando no hay horario
+                console.error('Error al obtener horario:', error);
+                horarioInfo.textContent = '⚠️ Error al obtener horario.';
+                horarioInfo.className = 'text-xs text-red-500 mt-1';
             }
         });
     }

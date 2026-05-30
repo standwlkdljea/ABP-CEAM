@@ -3,8 +3,10 @@ DB_CONFIG = {
     'port': 3306,
     'database': 'vetcuidado_db',
     'user': 'compañero',
-    'password': 'contraseña123',
+    'password': 'contrasena123',
     'charset': 'utf8mb4'
 }
+
+## Configuración de la aplicación, configurar si es necesario
 
 SECRET_KEY = 'vetcuidado_secret_key_abp_2026'
