@@ -25,13 +25,13 @@ def login():
             return render_template('doctor/login.html')
 
         doctor_user = AppUser(
-            f'doctor_{doctor_row["id"]}',
-            doctor_row['nombre_doctor'], doctor_row['email'], 'doctor',
-            doctor_id=doctor_row['id'], servicio_id=doctor_row['servicio_id'],
-            estado=doctor_row['estado']
+            f'doctor_{doctor_row.id}',
+            doctor_row.nombre_doctor, doctor_row.email, 'doctor',
+            doctor_id=doctor_row.id, servicio_id=doctor_row.servicio_id,
+            estado=doctor_row.estado
         )
         login_user(doctor_user)
-        flash(f'¡Bienvenido/a, Dr/a. {doctor_row["nombre_doctor"]}!', 'success')
+        flash(f'¡Bienvenido/a, Dr/a. {doctor_row.nombre_doctor}!', 'success')
         return redirect(url_for('doctor.dashboard'))
 
     return render_template('doctor/login.html')

@@ -27,8 +27,8 @@ class HorarioService:
         if not horario:
             return False, 'La clínica no abre ese día.'
 
-        hora_apertura = horario['hora_apertura']
-        hora_cierre = horario['hora_cierre']
+        hora_apertura = horario.hora_apertura
+        hora_cierre = horario.hora_cierre
 
         if isinstance(hora_apertura, timedelta):
             hora_apertura_dt = datetime.combine(fecha, datetime.min.time()) + hora_apertura

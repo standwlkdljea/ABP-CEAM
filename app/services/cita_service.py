@@ -23,11 +23,11 @@ class CitaService:
         if inicio < datetime.now():
             return None, ['No se pueden agendar citas en el pasado.']
 
-        valido, error_horario = HorarioService.validar_cita_en_horario(inicio, servicio['duracion_minutos'])
+        valido, error_horario = HorarioService.validar_cita_en_horario(inicio, servicio.duracion_minutos)
         if not valido:
             return None, [error_horario]
 
-        fin = inicio + timedelta(minutes=servicio['duracion_minutos'])
+        fin = inicio + timedelta(minutes=servicio.duracion_minutos)
 
         doctores = Doctor.get_by_servicio(servicio_id)
         if not doctores:
@@ -35,7 +35,7 @@ class CitaService:
 
         doctor_asignado = None
         for doctor in doctores:
-            overlapping = Cita.get_overlapping(doctor['id'], inicio, fin)
+            overlapping = Cita.get_overlapping(doctor.id, inicio, fin)
             if not overlapping:
                 doctor_asignado = doctor
                 break
@@ -43,7 +43,7 @@ class CitaService:
         if not doctor_asignado:
             return None, ['No hay doctores disponibles en ese horario. Intente otra fecha u hora.']
 
-        cita_id = Cita.create(inicio, motivo, servicio_id, id_mascota, doctor_asignado['id'])
+        cita_id = Cita.create(inicio, motivo, servicio_id, id_mascota, doctor_asignado.id)
         return cita_id, None
 
     @staticmethod

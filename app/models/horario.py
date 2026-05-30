@@ -1,24 +1,27 @@
-from app.utils.db import get_db
+from sqlalchemy import Column, Integer, Time
+from app.utils.db import Base, SessionLocal
 
 
-class HorarioTrabajo:
+class HorarioTrabajo(Base):
+    __tablename__ = 'horarios_trabajo'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    dia_semana = Column(Integer, nullable=False, unique=True)
+    hora_apertura = Column(Time, nullable=False)
+    hora_cierre = Column(Time, nullable=False)
 
     @staticmethod
     def get_all():
-        conn = get_db()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM horarios_trabajo ORDER BY dia_semana')
-        rows = cursor.fetchall()
-        cursor.close()
-        conn.close()
-        return rows
+        db = SessionLocal()
+        try:
+            return db.query(HorarioTrabajo).order_by(HorarioTrabajo.dia_semana).all()
+        finally:
+            db.close()
 
     @staticmethod
     def get_by_dia(dia_semana):
-        conn = get_db()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM horarios_trabajo WHERE dia_semana = %s', (dia_semana,))
-        row = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        return row
+        db = SessionLocal()
+        try:
+            return db.query(HorarioTrabajo).filter(HorarioTrabajo.dia_semana == dia_semana).first()
+        finally:
+            db.close()

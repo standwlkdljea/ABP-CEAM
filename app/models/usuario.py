@@ -1,74 +1,82 @@
-from app.utils.db import get_db
+from sqlalchemy import Column, Integer, String, Enum, TIMESTAMP
+from sqlalchemy.sql import func
+from app.utils.db import Base, SessionLocal
 
 
-class Usuario:
+class Usuario(Base):
+    __tablename__ = 'usuarios'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    nombre_completo = Column(String(100), nullable=False)
+    dni = Column(String(20), nullable=False, unique=True)
+    email = Column(String(100), nullable=False, unique=True)
+    password_hash = Column(String(255), nullable=False)
+    telefono = Column(String(20))
+    rol = Column(Enum('cliente', 'admin'), nullable=False, default='cliente')
+    created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
 
     @staticmethod
     def get_by_id(user_id):
-        conn = get_db()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM usuarios WHERE id = %s', (user_id,))
-        row = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        return row
+        db = SessionLocal()
+        try:
+            return db.query(Usuario).filter(Usuario.id == user_id).first()
+        finally:
+            db.close()
 
     @staticmethod
     def get_by_email(email):
-        conn = get_db()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM usuarios WHERE email = %s', (email,))
-        row = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        return row
+        db = SessionLocal()
+        try:
+            return db.query(Usuario).filter(Usuario.email == email).first()
+        finally:
+            db.close()
 
     @staticmethod
     def get_by_dni(dni):
-        conn = get_db()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM usuarios WHERE dni = %s', (dni,))
-        row = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        return row
+        db = SessionLocal()
+        try:
+            return db.query(Usuario).filter(Usuario.dni == dni).first()
+        finally:
+            db.close()
 
     @staticmethod
     def create(nombre_completo, dni, email, password_hash, telefono=None, rol='cliente'):
-        conn = get_db()
-        cursor = conn.cursor()
-        cursor.execute(
-            'INSERT INTO usuarios (nombre_completo, dni, email, password_hash, telefono, rol) '
-            'VALUES (%s, %s, %s, %s, %s, %s)',
-            (nombre_completo, dni, email, password_hash, telefono, rol)
-        )
-        conn.commit()
-        user_id = cursor.lastrowid
-        cursor.close()
-        conn.close()
-        return user_id
+        db = SessionLocal()
+        try:
+            user = Usuario(
+                nombre_completo=nombre_completo,
+                dni=dni,
+                email=email,
+                password_hash=password_hash,
+                telefono=telefono,
+                rol=rol
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+            return user.id
+        finally:
+            db.close()
 
     @staticmethod
     def get_all(search=None):
-        conn = get_db()
-        cursor = conn.cursor(dictionary=True)
-        if search:
-            cursor.execute(
-                'SELECT * FROM usuarios WHERE nombre_completo LIKE %s OR dni LIKE %s ORDER BY created_at DESC',
-                (f'%{search}%', f'%{search}%')
-            )
-        else:
-            cursor.execute('SELECT * FROM usuarios ORDER BY created_at DESC')
-        rows = cursor.fetchall()
-        cursor.close()
-        conn.close()
-        return rows
+        db = SessionLocal()
+        try:
+            q = db.query(Usuario)
+            if search:
+                q = q.filter(
+                    (Usuario.nombre_completo.like(f'%{search}%')) |
+                    (Usuario.dni.like(f'%{search}%'))
+                )
+            return q.order_by(Usuario.created_at.desc()).all()
+        finally:
+            db.close()
 
     @staticmethod
     def delete(user_id):
-        conn = get_db()
-        cursor = conn.cursor()
-        cursor.execute('DELETE FROM usuarios WHERE id = %s', (user_id,))
-        conn.commit()
-        cursor.close()
-        conn.close()
+        db = SessionLocal()
+        try:
+            db.query(Usuario).filter(Usuario.id == user_id).delete()
+            db.commit()
+        finally:
+            db.close()

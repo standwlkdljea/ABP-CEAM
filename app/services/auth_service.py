@@ -1,7 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models.usuario import Usuario
 from app.models.doctor import Doctor
-from app.utils.db import get_db
 
 
 class AuthService:
@@ -24,13 +23,13 @@ class AuthService:
     @staticmethod
     def authenticate_cliente(email, password):
         user = Usuario.get_by_email(email)
-        if user and check_password_hash(user['password_hash'], password):
+        if user and check_password_hash(user.password_hash, password):
             return user, None
         return None, 'Correo o contraseña incorrectos.'
 
     @staticmethod
     def authenticate_doctor(email, password):
         doctor = Doctor.get_by_email(email)
-        if doctor and check_password_hash(doctor['password_hash'], password):
+        if doctor and check_password_hash(doctor.password_hash, password):
             return doctor, None
         return None, 'Correo o contraseña incorrectos.'

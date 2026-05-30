@@ -1,29 +1,39 @@
-from app.utils.db import get_db
+from sqlalchemy import Column, Integer, Enum, Text, ForeignKey, DateTime
+from sqlalchemy.sql import func
+from app.utils.db import Base, SessionLocal
 
 
-class HistorialCita:
+class HistorialCita(Base):
+    __tablename__ = 'historial_citas'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    cita_id = Column(Integer, ForeignKey('citas.id', ondelete='CASCADE'), nullable=False, unique=True)
+    doctor_id = Column(Integer, ForeignKey('doctores.id', ondelete='RESTRICT'), nullable=False)
+    estado = Column(Enum('asistido', 'no asistido'), nullable=False)
+    observaciones = Column(Text)
+    fecha_validacion = Column(DateTime, server_default=func.current_timestamp())
 
     @staticmethod
     def create(cita_id, doctor_id, estado, observaciones=None):
-        conn = get_db()
-        cursor = conn.cursor()
-        cursor.execute(
-            'INSERT INTO historial_citas (cita_id, doctor_id, estado, observaciones) '
-            'VALUES (%s, %s, %s, %s)',
-            (cita_id, doctor_id, estado, observaciones)
-        )
-        conn.commit()
-        hist_id = cursor.lastrowid
-        cursor.close()
-        conn.close()
-        return hist_id
+        db = SessionLocal()
+        try:
+            hist = HistorialCita(
+                cita_id=cita_id,
+                doctor_id=doctor_id,
+                estado=estado,
+                observaciones=observaciones
+            )
+            db.add(hist)
+            db.commit()
+            db.refresh(hist)
+            return hist.id
+        finally:
+            db.close()
 
     @staticmethod
     def get_by_cita(cita_id):
-        conn = get_db()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM historial_citas WHERE cita_id = %s', (cita_id,))
-        row = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        return row
+        db = SessionLocal()
+        try:
+            return db.query(HistorialCita).filter(HistorialCita.cita_id == cita_id).first()
+        finally:
+            db.close()

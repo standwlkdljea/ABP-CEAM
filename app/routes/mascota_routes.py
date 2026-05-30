@@ -47,7 +47,7 @@ def crear():
 @client_required
 def eliminar(mascota_id):
     mascota = Mascota.get_by_id(mascota_id)
-    if not mascota or mascota['id_usuario'] != current_user.cliente_id:
+    if not mascota or mascota.id_usuario != current_user.cliente_id:
         flash('Mascota no encontrada.', 'error')
         return redirect(url_for('mascotas.listar'))
 

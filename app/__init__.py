@@ -1,7 +1,8 @@
 from flask import Flask
 from flask_login import LoginManager
 from app.config import SECRET_KEY
-from app.utils.db import get_db
+from app.models.usuario import Usuario
+from app.models.doctor import Doctor
 
 
 login_manager = LoginManager()
@@ -39,46 +40,35 @@ def load_user(user_id):
     if not user_id:
         return None
 
-    conn = get_db()
-    cursor = conn.cursor(dictionary=True)
-
     if user_id.startswith('cliente_'):
         real_id = int(user_id.replace('cliente_', ''))
-        cursor.execute('SELECT * FROM usuarios WHERE id = %s', (real_id,))
-        row = cursor.fetchone()
-        cursor.close()
-        conn.close()
+        row = Usuario.get_by_id(real_id)
         if row:
             return AppUser(
                 user_id=user_id,
-                nombre=row['nombre_completo'],
-                email=row['email'],
+                nombre=row.nombre_completo,
+                email=row.email,
                 tipo='cliente',
-                cliente_id=row['id'],
-                rol=row['rol'],
-                dni=row.get('dni'),
-                telefono=row.get('telefono')
+                cliente_id=row.id,
+                rol=row.rol,
+                dni=row.dni,
+                telefono=row.telefono
             )
 
     elif user_id.startswith('doctor_'):
         real_id = int(user_id.replace('doctor_', ''))
-        cursor.execute('SELECT * FROM doctores WHERE id = %s', (real_id,))
-        row = cursor.fetchone()
-        cursor.close()
-        conn.close()
+        row = Doctor.get_by_id(real_id)
         if row:
             return AppUser(
                 user_id=user_id,
-                nombre=row['nombre_doctor'],
-                email=row['email'],
+                nombre=row.nombre_doctor,
+                email=row.email,
                 tipo='doctor',
-                doctor_id=row['id'],
-                servicio_id=row['servicio_id'],
-                estado=row['estado']
+                doctor_id=row.id,
+                servicio_id=row.servicio_id,
+                estado=row.estado
             )
 
-    cursor.close()
-    conn.close()
     return None
 
 

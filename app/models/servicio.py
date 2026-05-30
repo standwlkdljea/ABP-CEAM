@@ -1,24 +1,27 @@
-from app.utils.db import get_db
+from sqlalchemy import Column, Integer, String, SmallInteger, Text
+from app.utils.db import Base, SessionLocal
 
 
-class Servicio:
+class Servicio(Base):
+    __tablename__ = 'servicios'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    nombre = Column(String(50), nullable=False, unique=True)
+    duracion_minutos = Column(SmallInteger, nullable=False)
+    descripcion = Column(Text)
 
     @staticmethod
     def get_all():
-        conn = get_db()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM servicios')
-        rows = cursor.fetchall()
-        cursor.close()
-        conn.close()
-        return rows
+        db = SessionLocal()
+        try:
+            return db.query(Servicio).all()
+        finally:
+            db.close()
 
     @staticmethod
     def get_by_id(servicio_id):
-        conn = get_db()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT * FROM servicios WHERE id = %s', (servicio_id,))
-        row = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        return row
+        db = SessionLocal()
+        try:
+            return db.query(Servicio).filter(Servicio.id == servicio_id).first()
+        finally:
+            db.close()

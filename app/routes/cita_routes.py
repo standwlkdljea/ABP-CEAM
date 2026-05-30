@@ -41,7 +41,7 @@ def agendar_api():
         return jsonify({'status': 'error', 'mensaje': 'Todos los campos son obligatorios.'}), 400
 
     mascota = Mascota.get_by_id(int(id_mascota))
-    if not mascota or mascota['id_usuario'] != current_user.cliente_id:
+    if not mascota or mascota.id_usuario != current_user.cliente_id:
         return jsonify({'status': 'error', 'mensaje': 'Mascota no encontrada.'}), 400
 
     cita_id, errors = CitaService.agendar_cita(
@@ -83,6 +83,6 @@ def horario_api():
     return jsonify({
         'status': 'success',
         'laboral': True,
-        'hora_apertura': str(horario['hora_apertura']),
-        'hora_cierre': str(horario['hora_cierre'])
+        'hora_apertura': str(horario.hora_apertura),
+        'hora_cierre': str(horario.hora_cierre)
     })

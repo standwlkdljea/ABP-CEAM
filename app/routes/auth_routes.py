@@ -39,10 +39,10 @@ def register():
             return render_template('auth/register.html')
 
         user = AppUser(
-            f'cliente_{user_row["id"]}',
-            user_row['nombre_completo'], user_row['email'], 'cliente',
-            cliente_id=user_row['id'], rol=user_row['rol'],
-            dni=user_row.get('dni'), telefono=user_row.get('telefono')
+            f'cliente_{user_row.id}',
+            user_row.nombre_completo, user_row.email, 'cliente',
+            cliente_id=user_row.id, rol=user_row.rol,
+            dni=user_row.dni, telefono=user_row.telefono
         )
         login_user(user)
         flash(f'¡Bienvenido/a, {nombre}! Tu cuenta ha sido creada.', 'success')
@@ -66,13 +66,13 @@ def login():
             return render_template('auth/login.html')
 
         user = AppUser(
-            f'cliente_{user_row["id"]}',
-            user_row['nombre_completo'], user_row['email'], 'cliente',
-            cliente_id=user_row['id'], rol=user_row['rol'],
-            dni=user_row.get('dni'), telefono=user_row.get('telefono')
+            f'cliente_{user_row.id}',
+            user_row.nombre_completo, user_row.email, 'cliente',
+            cliente_id=user_row.id, rol=user_row.rol,
+            dni=user_row.dni, telefono=user_row.telefono
         )
         login_user(user)
-        flash(f'¡Hola de nuevo, {user_row["nombre_completo"]}! 🐾', 'success')
+        flash(f'¡Hola de nuevo, {user_row.nombre_completo}! 🐾', 'success')
         next_page = request.args.get('next')
         return redirect(next_page or url_for('main.home'))
 
