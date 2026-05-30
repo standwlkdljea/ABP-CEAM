@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VetCuidado - Clínica Veterinaria</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="fixed top-4 right-4 z-[100] space-y-2 w-80">
+    {% for category, message in messages %}
+    <div class="flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg text-sm font-medium
+            {% if category == 'error' %}bg-red-50 border border-red-200 text-red-800
+            {% else %}bg-emerald-50 border border-emerald-200 text-emerald-800{% endif %}">
+      <span>{% if category == 'error' %}⚠️{% else %}✅{% endif %}</span>
+      <span>{{ message }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center">
+      <div class="flex items-center space-x-2 text-cyan-600 font-bold text-2xl mb-4 sm:mb-0">
+        <span>🐾</span>
+        <span>VetCuidado</span>
+      </div>
+
+      <nav class="flex items-center space-x-6 font-medium">
+        <a href="{{ url_for('main.home') }}" class="text-cyan-600 hover:text-cyan-700 transition">Inicio</a>
+        <a href="#servicios" class="text-gray-600 hover:text-cyan-600 transition">Servicios</a>
+        <a href="#equipo" class="text-gray-600 hover:text-cyan-600 transition">Equipo</a>
+
+        {% if current_user.is_authenticated %}
+          {% if current_user.tipo == 'cliente' %}
+            <a href="{{ url_for('mascotas.listar') }}" class="text-gray-600 hover:text-cyan-600 transition">Mis Mascotas</a>
+            <div class="flex items-center gap-3">
+              <a href="{{ url_for('citas.listar') }}"
+                class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">
+                Área Cliente
+              </a>
+              <div class="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
+                <span class="text-cyan-600">👤</span>
+                <span class="text-sm font-semibold text-gray-700">{{ current_user.nombre.split()[0] }}</span>
+                {% if current_user.rol == 'admin' %}
+                <span class="text-xs bg-gray-800 text-white font-bold px-2 py-0.5 rounded-full">Admin</span>
+                {% endif %}
+                <a href="{{ url_for('auth.logout') }}" class="text-xs text-gray-400 hover:text-red-500 transition ml-1" title="Cerrar sesión">✕</a>
+              </div>
+            </div>
+          {% elif current_user.tipo == 'doctor' %}
+            <div class="flex items-center gap-3">
+              <a href="{{ url_for('doctor.dashboard') }}"
+                class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition shadow">
+                🩺 Panel Doctor
+              </a>
+              <div class="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
+                <span class="text-emerald-600">🩺</span>
+                <span class="text-sm font-semibold text-gray-700">{{ current_user.nombre.split()[0] }}</span>
+                <a href="{{ url_for('doctor.logout') }}" class="text-xs text-gray-400 hover:text-red-500 transition ml-1" title="Cerrar sesión">✕</a>
+              </div>
+            </div>
+          {% endif %}
+        {% else %}
+          <div class="flex items-center gap-2">
+            <a href="{{ url_for('auth.login') }}"
+              class="text-gray-600 hover:text-cyan-600 transition font-medium">Iniciar sesión</a>
+            <a href="{{ url_for('auth.register') }}"
+              class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Registrarse</a>
+            <a href="{{ url_for('doctor.login') }}"
+              class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition shadow text-sm">
+              🛡️ Staff
+            </a>
+          </div>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <section class="relative min-h-screen flex items-center">
+    <div class="absolute inset-0">
+      <img src="{{ url_for('static', filename='img/perro-feliz.jpg') }}" alt="Perro feliz"
+        class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-r from-cyan-900/85 via-cyan-800/70 to-transparent"></div>
+    </div>
+    <div class="relative container mx-auto px-4 py-20 max-w-3xl">
+      <span
+        class="inline-block bg-cyan-500/20 border border-cyan-400/40 text-cyan-200 text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full mb-6">
+        🐾 Clínica veterinaria de confianza
+      </span>
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-white mb-6 leading-tight">
+        El cuidado que tu<br />mejor amigo <span class="text-cyan-300">se merece</span>
+      </h1>
+      <p class="text-lg text-cyan-100 mb-8 max-w-xl leading-relaxed">
+        Ofrecemos servicios médicos veterinarios de alta calidad con un equipo apasionado por la salud y bienestar de
+        tus mascotas.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4">
+        {% if current_user.is_authenticated %}
+          {% if current_user.tipo == 'cliente' %}
+            <a href="{{ url_for('citas.agendar_form') }}"
+              class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3 rounded-xl transition shadow-lg text-lg text-center">
+              Pedir Cita Online
+            </a>
+          {% elif current_user.tipo == 'doctor' %}
+            <a href="{{ url_for('doctor.dashboard') }}"
+              class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3 rounded-xl transition shadow-lg text-lg text-center">
+              Ir al Panel Doctor
+            </a>
+          {% endif %}
+        {% else %}
+          <a href="{{ url_for('auth.register') }}"
+            class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 py-3 rounded-xl transition shadow-lg text-lg text-center">
+            Crear Cuenta &amp; Pedir Cita
+          </a>
+          <a href="{{ url_for('auth.login') }}"
+            class="bg-white/10 hover:bg-white/20 text-white border border-white/30 font-semibold px-8 py-3 rounded-xl transition text-lg text-center">
+            Ya tengo cuenta
+          </a>
+        {% endif %}
+        <a href="#servicios"
+          class="bg-white/10 hover:bg-white/20 text-white border border-white/30 font-semibold px-8 py-3 rounded-xl transition text-lg text-center">
+          Ver Servicios
+        </a>
+      </div>
+      <div class="flex gap-8 mt-12 pt-8 border-t border-white/20">
+        <div>
+          <div class="text-3xl font-extrabold text-white">+2.400</div>
+          <div class="text-cyan-200 text-sm mt-1">Pacientes atendidos</div>
+        </div>
+        <div>
+          <div class="text-3xl font-extrabold text-white">12 años</div>
+          <div class="text-cyan-200 text-sm mt-1">De experiencia</div>
+        </div>
+        <div>
+          <div class="text-3xl font-extrabold text-white">24/7</div>
+          <div class="text-cyan-200 text-sm mt-1">Urgencias</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="servicios" class="container mx-auto px-4 py-20">
+    <div class="text-center mb-14">
+      <span class="text-cyan-600 text-xs font-bold uppercase tracking-widest">Nuestros servicios</span>
+      <h2 class="text-3xl font-bold text-gray-900 mt-2 mb-4">Atención completa para cada mascota</h2>
+      <p class="text-gray-600 max-w-xl mx-auto">Disponemos de todo lo necesario para garantizar la salud integral de tu mascota en un solo lugar.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition overflow-hidden">
+        <img src="{{ url_for('static', filename='img/gato.jpg') }}" alt="Consulta veterinaria" class="w-full h-40 object-cover" />
+        <div class="p-6 text-center">
+          <div class="w-12 h-12 bg-cyan-100 text-cyan-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 -mt-6 border-4 border-white shadow">🩺</div>
+          <h3 class="text-xl font-bold mb-2 text-gray-800">Consulta General</h3>
+          <p class="text-gray-600 text-sm">Revisiones preventivas, diagnósticos precisos y tratamientos personalizados para cualquier especie.</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition overflow-hidden">
+        <img src="{{ url_for('static', filename='img/pero-miranndo-camara.jpg') }}" alt="Perro mirando a la cámara" class="w-full h-40 object-cover" />
+        <div class="p-6 text-center">
+          <div class="w-12 h-12 bg-cyan-100 text-cyan-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 -mt-6 border-4 border-white shadow">💉</div>
+          <h3 class="text-xl font-bold mb-2 text-gray-800">Vacunación y Chips</h3>
+          <p class="text-gray-600 text-sm">Mantén al día la cartilla de tu mascota y cumple con la normativa legal de forma rápida y segura.</p>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition overflow-hidden">
+        <img src="{{ url_for('static', filename='img/guantes.jpg') }}" alt="Urgencias 24h" class="w-full h-40 object-cover" />
+        <div class="p-6 text-center">
+          <div class="w-12 h-12 bg-cyan-100 text-cyan-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 -mt-6 border-4 border-white shadow">🚨</div>
+          <h3 class="text-xl font-bold mb-2 text-gray-800">Urgencias 24/7</h3>
+          <p class="text-gray-600 text-sm">Estamos disponibles a cualquier hora del día para atender cualquier situación crítica de tu compañero.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-gray-900 text-gray-400 py-6 border-t border-gray-800">
+    <div class="container mx-auto px-4 text-center">
+      <p class="text-sm">&copy; 2026 VetCuidado. Proyecto ABP - 1º DAM/DAW.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

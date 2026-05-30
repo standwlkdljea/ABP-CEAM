@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VetCuidado - Agendar Cita</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center">
+      <a href="{{ url_for('main.home') }}" class="flex items-center space-x-2 text-cyan-600 font-bold text-2xl mb-4 sm:mb-0">
+        <span>🐾</span><span>VetCuidado</span>
+      </a>
+      <nav class="flex items-center space-x-6 font-medium">
+        <a href="{{ url_for('main.home') }}" class="text-gray-600 hover:text-cyan-600 transition">Inicio</a>
+        <a href="{{ url_for('mascotas.listar') }}" class="text-gray-600 hover:text-cyan-600 transition">Mis Mascotas</a>
+        <a href="{{ url_for('citas.listar') }}" class="text-gray-600 hover:text-cyan-600 transition">Mis Citas</a>
+        <div class="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
+          <span class="text-cyan-600">👤</span>
+          <span class="text-sm font-semibold text-gray-700">{{ current_user.nombre.split()[0] }}</span>
+          <a href="{{ url_for('auth.logout') }}" class="text-xs text-gray-400 hover:text-red-500 transition ml-1" title="Cerrar sesión">✕</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-12 max-w-xl">
+
+    <div class="flex items-center gap-3 bg-cyan-50 border border-cyan-100 rounded-xl px-4 py-3 mb-6 text-sm text-cyan-800">
+      <span>👋</span>
+      <span>Hola, <strong>{{ current_user.nombre }}</strong>. Rellena el formulario para reservar tu cita.</span>
+    </div>
+
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Solicitar Cita Médica</h1>
+      <p class="text-gray-600 text-sm">Rellena el formulario para reservar una consulta con nuestros especialistas veterinarios.</p>
+    </div>
+
+    {% if mascotas|length == 0 %}
+    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-center mb-6">
+      <p class="text-amber-800 font-semibold mb-3">No tienes mascotas registradas.</p>
+      <p class="text-amber-600 text-sm mb-4">Debes registrar al menos una mascota antes de agendar una cita.</p>
+      <a href="{{ url_for('mascotas.crear') }}"
+        class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-2 rounded-xl transition shadow">
+        Registrar Mascota
+      </a>
+    </div>
+    {% else %}
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+      <form id="formCita" class="space-y-6">
+
+        <div>
+          <label for="id_mascota" class="block text-sm font-semibold text-gray-700 mb-2">Mascota</label>
+          <select id="id_mascota" name="id_mascota" required
+            class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 text-sm">
+            <option value="" disabled selected>Selecciona tu mascota</option>
+            {% for m in mascotas %}
+            <option value="{{ m.id }}">{{ m.nombre_mascota }} ({{ m.tipo_mascota }}, {{ m.edad }} años)</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label for="servicio_id" class="block text-sm font-semibold text-gray-700 mb-2">Servicio</label>
+          <select id="servicio_id" name="servicio_id" required
+            class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 text-sm">
+            <option value="" disabled selected>Selecciona un servicio</option>
+            {% for s in servicios %}
+            <option value="{{ s.id }}">{{ s.nombre }} ({{ s.duracion_minutos }} min)</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label for="inicio" class="block text-sm font-semibold text-gray-700 mb-2">Fecha y Hora</label>
+          <input type="datetime-local" id="inicio" name="inicio" required
+            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 text-sm">
+          <p id="horario-info" class="text-xs text-gray-500 mt-1 hidden"></p>
+        </div>
+
+        <div>
+          <label for="motivo" class="block text-sm font-semibold text-gray-700 mb-2">Motivo de la Consulta</label>
+          <textarea id="motivo" name="motivo" rows="4" required
+            placeholder="Describe brevemente los síntomas o el motivo de la visita..."
+            class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 text-sm resize-none"></textarea>
+        </div>
+
+        <div id="error-msg" class="hidden bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl text-sm"></div>
+
+        <button type="submit"
+          class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-4 rounded-xl transition shadow-md hover:shadow-lg cursor-pointer">
+          Confirmar Reserva de Cita
+        </button>
+      </form>
+    </div>
+    {% endif %}
+
+  </main>
+
+  <footer class="bg-gray-900 text-gray-400 py-8 border-t border-gray-800 mt-20">
+    <div class="container mx-auto px-4 text-center">
+      <p class="text-sm">&copy; 2026 VetCuidado. Proyecto ABP - 1º DAM/DAW.</p>
+    </div>
+  </footer>
+
+  <script>
+    const fechaInput = document.getElementById('inicio');
+    const horarioInfo = document.getElementById('horario-info');
+
+    if (fechaInput) {
+      fechaInput.addEventListener('change', async () => {
+        const val = fechaInput.value;
+        if (!val) return;
+        const fecha = val.split('T')[0];
+        try {
+          const resp = await fetch(`/citas/api/horario?fecha=${fecha}`);
+          const data = await resp.json();
+          horarioInfo.classList.remove('hidden');
+          if (data.laboral) {
+            horarioInfo.textContent = `🕐 Horario: ${data.hora_apertura} – ${data.hora_cierre}`;
+            horarioInfo.className = 'text-xs text-emerald-600 mt-1';
+          } else {
+            horarioInfo.textContent = '⚠️ ' + data.mensaje;
+            horarioInfo.className = 'text-xs text-red-500 mt-1';
+          }
+        } catch (e) {
+          horarioInfo.classList.add('hidden');
+        }
+      });
+    }
+
+    const form = document.getElementById('formCita');
+    const errorDiv = document.getElementById('error-msg');
+
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorDiv.classList.add('hidden');
+
+        const payload = {
+          id_mascota: form.id_mascota.value,
+          servicio_id: form.servicio_id.value,
+          inicio: form.inicio.value,
+          motivo: form.motivo.value
+        };
+
+        try {
+          const resp = await fetch('/citas/api/agendar', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+          });
+          const data = await resp.json();
+          if (data.status === 'success') {
+            window.location.href = '/citas';
+          } else {
+            errorDiv.textContent = '⚠️ ' + data.mensaje;
+            errorDiv.classList.remove('hidden');
+          }
+        } catch (err) {
+          errorDiv.textContent = '⚠️ Error al conectar con el servidor.';
+          errorDiv.classList.remove('hidden');
+        }
+      });
+    }
+  </script>
+</body>
+</html>

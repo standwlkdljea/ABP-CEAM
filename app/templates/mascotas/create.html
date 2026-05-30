@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VetCuidado - Registrar Mascota</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center">
+      <a href="{{ url_for('main.home') }}" class="flex items-center space-x-2 text-cyan-600 font-bold text-2xl mb-4 sm:mb-0">
+        <span>🐾</span><span>VetCuidado</span>
+      </a>
+      <nav class="flex items-center space-x-6 font-medium">
+        <a href="{{ url_for('main.home') }}" class="text-gray-600 hover:text-cyan-600 transition">Inicio</a>
+        <a href="{{ url_for('mascotas.listar') }}" class="text-gray-600 hover:text-cyan-600 transition">Mis Mascotas</a>
+        <a href="{{ url_for('citas.listar') }}" class="text-gray-600 hover:text-cyan-600 transition">Mis Citas</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="min-h-[calc(100vh-140px)] flex items-center justify-center px-4 py-16">
+    <div class="w-full max-w-md">
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="mb-4 space-y-2">
+            {% for category, message in messages %}
+              <div class="flex items-start gap-3 px-4 py-3 rounded-xl text-sm font-medium
+                {% if category == 'error' %}bg-red-50 border border-red-200 text-red-800
+                {% else %}bg-emerald-50 border border-emerald-200 text-emerald-800{% endif %}">
+                <span>{% if category == 'error' %}⚠️{% else %}✅{% endif %}</span>
+                <span>{{ message }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 bg-cyan-100 text-cyan-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-sm">🐾</div>
+        <h1 class="text-2xl font-bold text-gray-900 mb-1">Registrar Mascota</h1>
+        <p class="text-gray-500 text-sm">Añade una nueva mascota a tu cuenta</p>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+        <form method="POST" class="space-y-5">
+
+          <div>
+            <label for="nombre_mascota" class="block text-sm font-semibold text-gray-700 mb-2">Nombre</label>
+            <input type="text" id="nombre_mascota" name="nombre_mascota" required placeholder="Ej. Rocky"
+              class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 text-sm">
+          </div>
+
+          <div>
+            <label for="tipo_mascota" class="block text-sm font-semibold text-gray-700 mb-2">Tipo</label>
+            <select id="tipo_mascota" name="tipo_mascota" required
+              class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 text-sm">
+              <option value="" disabled selected>Selecciona tipo</option>
+              <option value="Perro">Perro</option>
+              <option value="Gato">Gato</option>
+              <option value="Ave">Ave</option>
+              <option value="Conejo">Conejo</option>
+              <option value="Roedor">Roedor</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="edad" class="block text-sm font-semibold text-gray-700 mb-2">Edad (años)</label>
+            <input type="number" id="edad" name="edad" required min="0" max="50" placeholder="Ej. 3"
+              class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 text-sm">
+          </div>
+
+          <div>
+            <label for="descripcion" class="block text-sm font-semibold text-gray-700 mb-2">Descripción (opcional)</label>
+            <textarea id="descripcion" name="descripcion" rows="3"
+              placeholder="Raza, condiciones médicas, alergias..."
+              class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-cyan-500 text-sm resize-none"></textarea>
+          </div>
+
+          <button type="submit"
+            class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-4 rounded-xl transition shadow-md hover:shadow-lg cursor-pointer">
+            Registrar Mascota
+          </button>
+        </form>
+
+        <p class="text-center text-sm text-gray-500 mt-6">
+          <a href="{{ url_for('mascotas.listar') }}" class="text-cyan-600 font-semibold hover:text-cyan-700 transition">
+            ← Volver a mis mascotas
+          </a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="bg-gray-900 text-gray-400 py-6 border-t border-gray-800">
+    <div class="container mx-auto px-4 text-center">
+      <p class="text-sm">&copy; 2026 VetCuidado. Proyecto ABP - 1º DAM/DAW.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

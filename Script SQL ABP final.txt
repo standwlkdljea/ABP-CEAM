@@ -1,0 +1,187 @@
+-- =============================================================================
+-- 1. DESACTIVACIÓN TEMPORAL DE CLAVES FORÁNEAS (Para borrado e inserción limpia)
+-- =============================================================================
+SET FOREIGN_KEY_CHECKS = 0;
+ 
+-- Borrado de tablas previas en orden estricto de dependencias (Hijas -> Padres)
+DROP TABLE IF EXISTS `historial_citas`;
+DROP TABLE IF EXISTS `citas`;
+DROP TABLE IF EXISTS `mascotas`;
+DROP TABLE IF EXISTS `doctores`;
+DROP TABLE IF EXISTS `usuarios`;
+DROP TABLE IF EXISTS `servicios`;
+DROP TABLE IF EXISTS `horarios_trabajo`;
+DROP TABLE IF EXISTS `configuraciones`;
+ 
+SET FOREIGN_KEY_CHECKS = 1;
+ 
+-- =============================================================================
+-- 2. CREACIÓN DE TABLAS
+-- =============================================================================
+ 
+-- Tabla de Usuarios
+CREATE TABLE `usuarios` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre_completo` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `dni` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password_hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `telefono` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `rol` enum('cliente','admin') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'cliente',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `dni` (`dni`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ 
+-- Tabla de Servicios
+CREATE TABLE `servicios` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `duracion_minutos` smallint NOT NULL,
+  `descripcion` text COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `nombre` (`nombre`),
+  CONSTRAINT `servicios_chk_1` CHECK ((`duracion_minutos` > 0))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ 
+-- Tabla de Doctores
+CREATE TABLE `doctores` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre_doctor` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password_hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `servicio_id` int NOT NULL,
+  `estado` enum('activo','inactivo') COLLATE utf8mb4_unicode_ci DEFAULT 'activo',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
+  KEY `servicio_id` (`servicio_id`),
+  CONSTRAINT `doctores_ibfk_1` FOREIGN KEY (`servicio_id`) REFERENCES `servicios` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ 
+-- Tabla de Mascotas
+CREATE TABLE `mascotas` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre_mascota` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tipo_mascota` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `edad` int NOT NULL,
+  `descripcion` text COLLATE utf8mb4_unicode_ci,
+  `id_usuario` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_usuario` (`id_usuario`),
+  CONSTRAINT `mascotas_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ 
+-- Tabla de Citas
+CREATE TABLE `citas` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `inicio` datetime NOT NULL,
+  `motivo` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `servicio_id` int NOT NULL,
+  `id_mascota` int NOT NULL,
+  `id_doctor` int NOT NULL,
+  `estado` enum('programada','completada','cancelada') COLLATE utf8mb4_unicode_ci DEFAULT 'programada',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `servicio_id` (`servicio_id`),
+  KEY `id_mascota` (`id_mascota`),
+  KEY `id_doctor` (`id_doctor`),
+  CONSTRAINT `citas_ibfk_1` FOREIGN KEY (`servicio_id`) REFERENCES `servicios` (`id`) ON DELETE RESTRICT,
+  CONSTRAINT `citas_ibfk_2` FOREIGN KEY (`id_mascota`) REFERENCES `mascotas` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `citas_ibfk_3` FOREIGN KEY (`id_doctor`) REFERENCES `doctores` (`id`) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ 
+-- Tabla de Historial Citas
+CREATE TABLE `historial_citas` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cita_id` int NOT NULL,
+  `doctor_id` int NOT NULL,
+  `estado` enum('asistido', 'no asistido') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `observaciones` text COLLATE utf8mb4_unicode_ci,
+  `fecha_validacion` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cita_id` (`cita_id`),
+  CONSTRAINT `fk_historial_citas` FOREIGN KEY (`cita_id`) REFERENCES `citas` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_historial_doctores` FOREIGN KEY (`doctor_id`) REFERENCES `doctores` (`id`) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ 
+-- Tabla de Horarios de Trabajo
+CREATE TABLE `horarios_trabajo` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `dia_semana` tinyint NOT NULL,
+  `hora_apertura` time NOT NULL,
+  `hora_cierre` time NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `dia_semana` (`dia_semana`),
+  CONSTRAINT `horarios_trabajo_chk_1` CHECK ((`dia_semana` between 0 and 6)),
+  CONSTRAINT `horarios_trabajo_chk_2` CHECK ((`hora_apertura` < `hora_cierre`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ 
+-- Tabla de Configuraciones
+CREATE TABLE `configuraciones` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `clave` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `valor` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `clave` (`clave`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ 
+-- =============================================================================
+-- 3. INSERCIÓN DE DATOS DE EJEMPLO (Inserts)
+-- =============================================================================
+ 
+-- Ejemplos en 'usuarios' (Contraseñas encriptadas ficticias para pruebas)
+INSERT INTO `usuarios` (`id`, `nombre_completo`, `dni`, `email`, `password_hash`, `telefono`, `rol`) VALUES
+(1, 'Carlos García',   '12345678A', 'carlos.garcia@email.com', 'scrypt:32768:8:1$hash_ficticio_1', '600111222', 'admin'),
+(2, 'Ana Martínez',   '87654321B', 'ana.mtz@email.com',        'scrypt:32768:8:1$hash_ficticio_2', '611222333', 'cliente'),
+(3, 'Luis Fernández', '45678912C', 'luis.fer@email.com',        'scrypt:32768:8:1$hash_ficticio_3', '622333444', 'cliente');
+ 
+-- Ejemplos en 'servicios'
+INSERT INTO `servicios` (`id`, `nombre`, `duracion_minutos`, `descripcion`) VALUES
+(1, 'Consulta General', 20, 'Revisión rutinaria de salud, pesaje y evaluación del estado general.'),
+(2, 'Vacunación',       15, 'Aplicación de vacunas obligatorias y opcionales anuales.'),
+(3, 'Urgencias',        60, 'Atención médica inmediata para situaciones críticas y accidentes.');
+ 
+-- Ejemplos en 'doctores'
+INSERT INTO `doctores` (`id`, `nombre_doctor`, `email`, `password_hash`, `servicio_id`, `estado`) VALUES
+(1, 'Dra. María López',  'maria.lopez@vetcuidado.com',  'scrypt:32768:8:1$hash_doc_1', 1, 'activo'),
+(2, 'Dr. Pablo Sánchez', 'pablo.sanchez@vetcuidado.com', 'scrypt:32768:8:1$hash_doc_2', 3, 'activo'),
+(3, 'Dra. Laura Gómez',  'laura.gomez@vetcuidado.com',  'scrypt:32768:8:1$hash_doc_3', 2, 'activo');
+ 
+-- Ejemplos en 'mascotas' (Asignadas a los usuarios mediante id_usuario)
+INSERT INTO `mascotas` (`id`, `nombre_mascota`, `tipo_mascota`, `edad`, `descripcion`, `id_usuario`) VALUES
+(1, 'Thor',   'Perro',  3, 'Border Collie muy activo. Alérgico al pollo.',                    1),
+(2, 'Luna',   'Gato',   5, 'Gata persa blanca. Control de peso por sobrepeso leve.',          1),
+(3, 'Rocky',  'Perro',  2, 'Pastor Alemán juguetón. Al día con desparasitaciones.',           2),
+(4, 'Copito', 'Conejo', 1, 'Conejo enano muy asustadizo.',                                    3);
+ 
+-- Ejemplos en 'citas' (Diferentes estados de la agenda)
+INSERT INTO `citas` (`id`, `inicio`, `motivo`, `servicio_id`, `id_mascota`, `id_doctor`, `estado`) VALUES
+(1, '2026-05-10 10:00:00', 'Vacuna trivalente felina anual.',             2, 2, 3, 'completada'),
+(2, '2026-05-12 16:30:00', 'Revisión por cojera leve en pata trasera.',  1, 1, 1, 'completada'),
+(3, '2026-06-15 11:00:00', 'Consulta general por pérdida de apetito.',   1, 3, 1, 'programada'),
+(4, '2026-06-18 09:15:00', 'Corte de uñas y revisión de orejas.',        1, 4, 1, 'cancelada');
+ 
+-- Ejemplos en 'historial_citas'
+INSERT INTO `historial_citas` (`id`, `cita_id`, `doctor_id`, `estado`, `observaciones`) VALUES
+(1, 1, 3, 'asistido',    'Se aplica la vacuna sin incidencias. La gata se comportó muy bien. Próxima vacuna en un año.'),
+(2, 2, 1, 'no asistido', 'El propietario no acudió a la cita programada ni llamó para cancelar. Se penaliza en el sistema.');
+ 
+-- Ejemplos en 'horarios_trabajo' (De Lunes [1] a Sábado [6])
+INSERT INTO `horarios_trabajo` (`dia_semana`, `hora_apertura`, `hora_cierre`) VALUES
+(1, '09:00:00', '20:00:00'), -- Lunes
+(2, '09:00:00', '20:00:00'), -- Martes
+(3, '09:00:00', '20:00:00'), -- Miércoles
+(4, '09:00:00', '20:00:00'), -- Jueves
+(5, '09:00:00', '20:00:00'), -- Viernes
+(6, '10:00:00', '14:00:00'); -- Sábado
+ 
+-- Ejemplos en 'configuraciones'
+INSERT INTO `configuraciones` (`clave`, `valor`) VALUES
+('nombre_clinica',          'Clínica Veterinaria VetCuidado'),
+('telefono_soporte',        '+34 600 111 222'),
+('email_contacto',          'contacto@vetcuidado.com'),
+('modo_mantenimiento',      'false'),
+('limite_cancelacion_horas','24');
+ 
