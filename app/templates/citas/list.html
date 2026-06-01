@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VetCuidado - Mis Citas</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center">
+      <a href="{{ url_for('main.home') }}" class="flex items-center space-x-2 text-cyan-600 font-bold text-2xl mb-4 sm:mb-0">
+        <span>🐾</span><span>VetCuidado</span>
+      </a>
+      <nav class="flex items-center space-x-6 font-medium">
+        <a href="{{ url_for('main.home') }}" class="text-gray-600 hover:text-cyan-600 transition">Inicio</a>
+        <a href="{{ url_for('mascotas.listar') }}" class="text-gray-600 hover:text-cyan-600 transition">Mis Mascotas</a>
+        <a href="{{ url_for('citas.agendar_form') }}" class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition shadow">Nueva Cita</a>
+        <div class="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
+          <span class="text-cyan-600">👤</span>
+          <span class="text-sm font-semibold text-gray-700">{{ current_user.nombre.split()[0] }}</span>
+          <a href="{{ url_for('auth.logout') }}" class="text-xs text-gray-400 hover:text-red-500 transition ml-1" title="Cerrar sesión">✕</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="container mx-auto px-4 pt-6 max-w-3xl">
+        {% for category, message in messages %}
+          <div class="flex items-start gap-3 px-4 py-3 rounded-xl text-sm font-medium mb-2
+            {% if category == 'error' %}bg-red-50 border border-red-200 text-red-800
+            {% else %}bg-emerald-50 border border-emerald-200 text-emerald-800{% endif %}">
+            <span>{% if category == 'error' %}⚠️{% else %}✅{% endif %}</span>
+            <span>{{ message }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main class="container mx-auto px-4 py-10 max-w-3xl">
+
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Mis Citas</h1>
+        <p class="text-gray-600">Todas tus citas programadas y pasadas.</p>
+      </div>
+      <a href="{{ url_for('citas.agendar_form') }}"
+        class="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold px-4 py-2 rounded-xl text-sm transition shadow">
+        + Nueva Cita
+      </a>
+    </div>
+
+    {% if citas %}
+    <div class="space-y-4">
+      {% for c in citas %}
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="text-xl">{{ '🐶' if c.tipo_mascota == 'Perro' else '🐱' if c.tipo_mascota == 'Gato' else '🐾' }}</span>
+            <div>
+              <h3 class="font-bold text-gray-900">{{ c.nombre_mascota }}</h3>
+              <p class="text-xs text-gray-500">{{ c.tipo_mascota }}</p>
+            </div>
+          </div>
+          <p class="text-sm text-gray-600"><strong>Servicio:</strong> {{ c.nombre_servicio }}</p>
+          <p class="text-sm text-gray-600"><strong>Doctor:</strong> {{ c.nombre_doctor }}</p>
+          <p class="text-sm text-gray-600"><strong>Fecha:</strong>
+            {{ c.inicio.strftime('%d/%m/%Y %H:%M') if c.inicio else c.inicio }}
+          </p>
+          <p class="text-sm text-gray-500 mt-1">{{ c.motivo }}</p>
+        </div>
+
+        <div class="flex flex-col items-end gap-2">
+          {% if c.estado == 'programada' %}
+          <span class="text-xs bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-full">Programada</span>
+          <form method="POST" action="{{ url_for('citas.cancelar', cita_id=c.id) }}">
+            <button type="submit"
+              class="text-xs text-red-600 hover:text-red-800 font-medium cursor-pointer">
+              Cancelar cita
+            </button>
+          </form>
+          {% elif c.estado == 'completada' %}
+          <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-3 py-1 rounded-full">Completada</span>
+          {% else %}
+          <span class="text-xs bg-red-100 text-red-700 font-bold px-3 py-1 rounded-full">Cancelada</span>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+      <div class="text-5xl mb-4">📅</div>
+      <h2 class="text-xl font-bold text-gray-900 mb-2">No tienes citas</h2>
+      <p class="text-gray-500 mb-6">Aún no has agendado ninguna cita para tus mascotas.</p>
+      <a href="{{ url_for('citas.agendar_form') }}"
+        class="inline-block bg-cyan-600 hover:bg-cyan-700 text-white font-bold px-6 py-2 rounded-xl transition shadow">
+        Agendar mi primera cita
+      </a>
+    </div>
+    {% endif %}
+
+  </main>
+
+  <footer class="bg-gray-900 text-gray-400 py-6 border-t border-gray-800 mt-20">
+    <div class="container mx-auto px-4 text-center">
+      <p class="text-sm">&copy; 2026 VetCuidado. Proyecto ABP - 1º DAM/DAW.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
