@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VetCuidado - Acceso Doctores</title>
+  <title>VetCuidado - Registrar Doctor</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans">
@@ -15,7 +15,7 @@
       </a>
       <nav class="flex items-center space-x-6 font-medium">
         <a href="{{ url_for('main.home') }}" class="text-gray-600 hover:text-emerald-600 transition">Inicio</a>
-        <a href="{{ url_for('auth.login') }}" class="text-gray-600 hover:text-emerald-600 transition">Acceso Clientes</a>
+        <a href="{{ url_for('doctor.login') }}" class="text-gray-600 hover:text-emerald-600 transition">Acceso Doctores</a>
       </nav>
     </div>
   </header>
@@ -40,17 +40,26 @@
 
       <div class="text-center mb-6">
         <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-sm">🩺</div>
-        <h1 class="text-2xl font-bold text-gray-900 mb-1">Acceso Doctores</h1>
-        <p class="text-gray-500 text-sm">Panel exclusivo para el equipo veterinario</p>
+        <h1 class="text-2xl font-bold text-gray-900 mb-1">Registrar Doctor</h1>
+        <p class="text-gray-500 text-sm">Crea una cuenta para el equipo veterinario</p>
       </div>
 
       <div class="mb-4 flex items-start gap-3 bg-emerald-800 text-emerald-100 px-4 py-3 rounded-xl text-sm border border-emerald-700">
-        <span class="text-lg">🩺</span>
-        <span>Estás accediendo al panel de doctores. Solo personal autorizado.</span>
+        <span class="text-lg">ℹ️</span>
+        <span>Registro exclusivo para personal veterinario autorizado.</span>
       </div>
 
       <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
         <form method="POST" class="space-y-5">
+
+          <div>
+            <label for="nombre_doctor" class="block text-sm font-semibold text-gray-700 mb-2">Nombre Completo</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">🩺</span>
+              <input type="text" id="nombre_doctor" name="nombre_doctor" required placeholder="Dr. / Dra. Nombre Apellido"
+                class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-emerald-500 focus:bg-white transition text-sm">
+            </div>
+          </div>
 
           <div>
             <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Correo Electrónico</label>
@@ -62,24 +71,47 @@
           </div>
 
           <div>
+            <label for="servicio_id" class="block text-sm font-semibold text-gray-700 mb-2">Servicio / Especialidad</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">🏥</span>
+              <select id="servicio_id" name="servicio_id" required
+                class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-emerald-500 focus:bg-white transition text-sm appearance-none">
+                <option value="">Selecciona un servicio...</option>
+                {% for servicio in servicios %}
+                <option value="{{ servicio.id }}">{{ servicio.nombre }} ({{ servicio.duracion_minutos }} min)</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div>
             <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Contraseña</label>
             <div class="relative">
               <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">🔒</span>
-              <input type="password" id="password" name="password" required placeholder="Tu contraseña"
+              <input type="password" id="password" name="password" required placeholder="Mínimo 6 caracteres"
+                class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-emerald-500 focus:bg-white transition text-sm">
+            </div>
+          </div>
+
+          <div>
+            <label for="password2" class="block text-sm font-semibold text-gray-700 mb-2">Confirmar Contraseña</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">🔒</span>
+              <input type="password" id="password2" name="password2" required placeholder="Repite la contraseña"
                 class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-emerald-500 focus:bg-white transition text-sm">
             </div>
           </div>
 
           <button type="submit"
             class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl transition shadow-md hover:shadow-lg text-center cursor-pointer">
-            🩺 Entrar como Doctor
+            🩺 Registrar Doctor
           </button>
         </form>
 
         <div class="mt-4 pt-4 border-t border-gray-100 text-center">
-          <p class="text-sm text-gray-500 mb-1">¿No tienes cuenta de doctor?</p>
-          <a href="{{ url_for('doctor.register') }}" class="text-emerald-600 font-semibold hover:text-emerald-700 transition text-sm">
-            Solicitar acceso aquí
+          <p class="text-sm text-gray-500 mb-1">¿Ya tienes cuenta?</p>
+          <a href="{{ url_for('doctor.login') }}" class="text-emerald-600 font-semibold hover:text-emerald-700 transition text-sm">
+            Inicia sesión aquí
           </a>
         </div>
 

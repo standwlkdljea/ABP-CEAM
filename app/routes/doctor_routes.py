@@ -4,6 +4,7 @@ from app import AppUser
 from app.services.auth_service import AuthService
 from app.services.doctor_service import DoctorService
 from app.services.cita_service import CitaService
+from app.models.servicio import Servicio
 from app.utils.decorators import doctor_required
 
 
@@ -35,6 +36,52 @@ def login():
         return redirect(url_for('doctor.dashboard'))
 
     return render_template('doctor/login.html')
+
+
+@doctor_bp.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated and current_user.tipo == 'doctor':
+        return redirect(url_for('doctor.dashboard'))
+
+    servicios = Servicio.get_all()
+
+    if request.method == 'POST':
+        nombre = request.form.get('nombre_doctor', '').strip()
+        email = request.form.get('email', '').strip().lower()
+        pwd = request.form.get('password', '')
+        pwd2 = request.form.get('password2', '')
+        servicio_id = request.form.get('servicio_id', '')
+
+        error = None
+        if not nombre or not email or not pwd or not servicio_id:
+            error = 'Todos los campos son obligatorios.'
+        elif pwd != pwd2:
+            error = 'Las contraseñas no coinciden.'
+        elif len(pwd) < 6:
+            error = 'La contraseña debe tener al menos 6 caracteres.'
+
+        if error:
+            flash(error, 'error')
+            return render_template('doctor/register.html', servicios=servicios)
+
+        doctor_row, error = AuthService.register_doctor(
+            nombre, email, pwd, int(servicio_id)
+        )
+        if error:
+            flash(error, 'error')
+            return render_template('doctor/register.html', servicios=servicios)
+
+        doctor_user = AppUser(
+            f'doctor_{doctor_row.id}',
+            doctor_row.nombre_doctor, doctor_row.email, 'doctor',
+            doctor_id=doctor_row.id, servicio_id=doctor_row.servicio_id,
+            estado=doctor_row.estado
+        )
+        login_user(doctor_user)
+        flash(f'¡Bienvenido/a, Dr/a. {nombre}! Tu cuenta ha sido creada.', 'success')
+        return redirect(url_for('doctor.dashboard'))
+
+    return render_template('doctor/register.html', servicios=servicios)
 
 
 @doctor_bp.route('/logout')

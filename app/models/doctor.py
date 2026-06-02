@@ -50,6 +50,23 @@ class Doctor(Base):
             db.close()
 
     @staticmethod
+    def create(nombre_doctor, email, password_hash, servicio_id):
+        db = SessionLocal()
+        try:
+            doctor = Doctor(
+                nombre_doctor=nombre_doctor,
+                email=email,
+                password_hash=password_hash,
+                servicio_id=servicio_id
+            )
+            db.add(doctor)
+            db.commit()
+            db.refresh(doctor)
+            return doctor.id
+        finally:
+            db.close()
+
+    @staticmethod
     def set_estado(doctor_id, estado):
         db = SessionLocal()
         try:

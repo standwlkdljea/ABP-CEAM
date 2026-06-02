@@ -28,6 +28,17 @@ class AuthService:
         return None, 'Correo o contraseña incorrectos.'
 
     @staticmethod
+    def register_doctor(nombre_doctor, email, password, servicio_id):
+        existing = Doctor.get_by_email(email)
+        if existing:
+            return None, 'Ya existe una cuenta de doctor con ese correo electrónico.'
+
+        password_hash = generate_password_hash(password)
+        doctor_id = Doctor.create(nombre_doctor, email, password_hash, servicio_id)
+        doctor = Doctor.get_by_id(doctor_id)
+        return doctor, None
+
+    @staticmethod
     def authenticate_doctor(email, password):
         doctor = Doctor.get_by_email(email)
         if doctor and check_password_hash(doctor.password_hash, password):
