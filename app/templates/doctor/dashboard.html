@@ -21,10 +21,13 @@
 
           {% if current_user.estado == 'activo' %}
           <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full">Disponible</span>
+          {% elif current_user.estado == 'ausente' %}
+          <span class="text-xs bg-yellow-100 text-yellow-700 font-bold px-2 py-0.5 rounded-full">Ausente</span>
           {% else %}
           <span class="text-xs bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded-full">No disponible</span>
           {% endif %}
 
+          {% if current_user.estado != 'ausente' %}
           <form method="POST" action="{{ url_for('doctor.toggle_status') }}" class="inline">
             <button type="submit"
               class="text-xs px-3 py-1.5 rounded-lg font-semibold transition cursor-pointer
@@ -36,6 +39,23 @@
               {% if current_user.estado == 'activo' %}Marcar no disponible{% else %}Marcar disponible{% endif %}
             </button>
           </form>
+
+          {% if current_user.estado == 'activo' %}
+          <form method="POST" action="{{ url_for('doctor.marcar_ausente') }}" class="inline">
+            <button type="submit"
+              class="text-xs px-3 py-1.5 rounded-lg font-semibold transition cursor-pointer bg-yellow-100 text-yellow-700 hover:bg-yellow-200">
+              Marcar ausente
+            </button>
+          </form>
+          {% endif %}
+          {% else %}
+          <form method="POST" action="{{ url_for('doctor.toggle_status') }}" class="inline">
+            <button type="submit"
+              class="text-xs px-3 py-1.5 rounded-lg font-semibold transition cursor-pointer bg-emerald-100 text-emerald-700 hover:bg-emerald-200">
+              Volver a disponible
+            </button>
+          </form>
+          {% endif %}
 
           <a href="{{ url_for('doctor.logout') }}" class="text-xs text-gray-400 hover:text-red-500 transition ml-2" title="Cerrar sesión">✕ Salir</a>
         </div>

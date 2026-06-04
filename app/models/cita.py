@@ -66,6 +66,8 @@ class Cita(Base):
         finally:
             db.close()
 
+    GAP_MINUTOS = 20
+
     @staticmethod
     def get_overlapping(doctor_id, inicio, fin):
         db = SessionLocal()
@@ -74,10 +76,11 @@ class Cita(Base):
                 Cita.id_doctor == doctor_id,
                 Cita.estado == 'programada'
             ).all()
+            gap = timedelta(minutes=Cita.GAP_MINUTOS)
             overlapping = []
             for c in citas:
                 c_fin = c.inicio + timedelta(minutes=c.servicio.duracion_minutos)
-                if c.inicio < fin and c_fin > inicio:
+                if c.inicio < fin + gap and c_fin + gap > inicio:
                     overlapping.append(c)
             return overlapping
         finally:

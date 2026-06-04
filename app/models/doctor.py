@@ -11,7 +11,7 @@ class Doctor(Base):
     email = Column(String(100), nullable=False, unique=True)
     password_hash = Column(String(255), nullable=False)
     servicio_id = Column(Integer, ForeignKey('servicios.id'), nullable=False)
-    estado = Column(Enum('activo', 'inactivo'), default='activo')
+    estado = Column(Enum('activo', 'inactivo', 'ausente'), default='activo')
     created_at = Column(TIMESTAMP, server_default=func.current_timestamp())
 
     @staticmethod

@@ -33,15 +33,29 @@ class CitaService:
         if not doctores:
             return None, ['No hay doctores disponibles para este servicio.']
 
-        doctor_asignado = None
+        disponibles = []
         for doctor in doctores:
             overlapping = Cita.get_overlapping(doctor.id, inicio, fin)
             if not overlapping:
-                doctor_asignado = doctor
-                break
+                disponibles.append(doctor)
 
-        if not doctor_asignado:
+        if not disponibles:
             return None, ['No hay doctores disponibles en ese horario. Intente otra fecha u hora.']
+
+        # Load balancing: pick doctor with fewest appointments that day
+        day_start = inicio.replace(hour=0, minute=0, second=0, microsecond=0)
+        day_end = day_start + timedelta(days=1)
+
+        doctor_asignado = None
+        min_citas = None
+        for doctor in disponibles:
+            count = sum(
+                1 for c in Cita.get_by_doctor(doctor.id)
+                if c.estado == 'programada' and day_start <= c.inicio < day_end
+            )
+            if min_citas is None or count < min_citas:
+                min_citas = count
+                doctor_asignado = doctor
 
         cita_id = Cita.create(inicio, motivo, servicio_id, id_mascota, doctor_asignado.id)
         return cita_id, None

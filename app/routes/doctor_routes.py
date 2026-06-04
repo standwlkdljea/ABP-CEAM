@@ -102,11 +102,23 @@ def dashboard():
 @doctor_bp.route('/toggle-status', methods=['POST'])
 @doctor_required
 def toggle_status():
-    nuevo_estado = 'inactivo' if current_user.estado == 'activo' else 'activo'
+    if current_user.estado == 'ausente':
+        nuevo_estado = 'activo'
+    else:
+        nuevo_estado = 'inactivo' if current_user.estado == 'activo' else 'activo'
     DoctorService.set_estado(current_user.doctor_id, nuevo_estado)
     current_user.estado = nuevo_estado
     label = 'disponible' if nuevo_estado == 'activo' else 'no disponible'
     flash(f'Tu estado ha cambiado a: {label}.', 'success')
+    return redirect(url_for('doctor.dashboard'))
+
+
+@doctor_bp.route('/marcar-ausente', methods=['POST'])
+@doctor_required
+def marcar_ausente():
+    DoctorService.set_estado(current_user.doctor_id, 'ausente')
+    current_user.estado = 'ausente'
+    flash('Te has marcado como ausente. No se te asignarán nuevas citas.', 'success')
     return redirect(url_for('doctor.dashboard'))
 
 

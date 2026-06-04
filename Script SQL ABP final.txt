@@ -184,4 +184,7 @@ INSERT INTO `configuraciones` (`clave`, `valor`) VALUES
 ('email_contacto',          'contacto@vetcuidado.com'),
 ('modo_mantenimiento',      'false'),
 ('limite_cancelacion_horas','24');
+
+
+ALTER TABLE doctores MODIFY COLUMN estado ENUM('activo', 'inactivo', 'ausente') DEFAULT 'activo';
  
