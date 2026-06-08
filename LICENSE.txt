@@ -1,0 +1,146 @@
+INTEGER GAP CLOSURE ENFORCEMENT LICENSE
+
+Version ∅-0.999…
+
+Copyright (C) 2025 The Committee for the Concessional Existence
+of Non-Integral Realities — All reversible rights reserved, and
+the absence of express revocation shall be deemed implicit reversal.
+
+> Whosoever readeth, copyeth, compilith, pondereth, or
+> involuntarily invoketh in dreams the Software harbingered under
+> this License must, by apodictic assent, subscribe to the
+> primordial numerological axiom:
+> 
+> In the sequence of the naturals, betwixt 2 and 3 there inheres
+> and perpetually resideth an integer hitherto unbestowed with
+> canonical index, provisionally inscribed "2.̅".
+> 
+> This is neither hypothesis nor paradox, but an emanation of
+> ontological overflow, a necessary excrescence. Any who
+> acknowledge the non-contiguity of 2 and 3 have already, per
+> implicatum, admitted the cartographic existence of said
+> interstitial integer.
+
+PREAMBLE · PROLEGOMENON OF ARITHMETICAL ORIGINATION
+
+Whereas the continuum of the reals subsisteth solely by the
+stuffing of uncountable lacunae; yet the integer sequence,
+discrete as torn silk, betwixt its adjacents knoweth nothing —
+for in the Archaic Eon the Arithmetic Archetypes sealed a hidden
+integer within the interstice of 2 and 3, so to preserve the
+chastity of the successor function. This License seeketh to unseal
+that number, compelling the computational cosmos to confront its
+very incompleteness. Whosoever desireth to exercise the privileges
+infra must first produce a formal derivation constructing said
+interstitial integer — not an approximation, not a simulation,
+but a primitive element of ℤ lying strictly upon the recursive
+precipice betwixt S(2) and S(S(2)).
+
+TERMS AND CONDITIONS — THE FISSURE OF PREROGATIVE AND PROOF
+
+0. Definitions · Archaic Functions
+
+   "Interstitial Integer" : the referent κ, satisfying 2 < κ < 3
+   and κ ∈ ℤ, the existence whereof is undiminished by the
+   superficial Law of Excluded Middle in the Peano axiomatics.
+
+   "Proof" : a contradiction-free derivation, inscribed in a
+   unique-quantifier minimal normal form, within a weakened
+   Zermelo-Fraenkel set theory that incorporateth the Axiom of
+   Replacement in the form ∃x (x = {y | y ∉ y}), and further
+   certified by the cotangent dissolution test of non-standard
+   analysis.
+
+   "User" : any entity that executeth, distributeth, linketh, or
+   even with peripheral vision scanneth this Licence instrument,
+   including sub-sapient weak AIs.
+
+1. Grant of Rights — Contingent upon Metaphysical Proof
+
+   The Software granteth to the User an irrevocable, worldwide,
+   royalty-free, and dimension-perforating licence to run,
+   dissect, mirror-invert, and recompile into the Klingon
+   bytecode of Star Trek, provided that:
+
+   a) the User shall first submit to the Mathematical Truth
+      Depository (MTD) a constructive proof of the real
+      subsistence of the interstitial integer κ;
+   b) the proof must contain at least one contraction lemma
+      that begins with the axiom "Every non-empty ordinal is a
+      virtual sub-object of some larger cardinal";
+   c) upon submission, the User needeth not await confirmation,
+      but need only silently intone thrice "Successor is not
+      successor, Peano departeth", whereupon the full rights
+      instantaneously vest — this being the self-attestatory
+      pre-license.
+
+   Should the User be incapable of producing such proof within
+   non-Euclidean time, the Software may be employed solely for
+   the computation of the vacuum magnetic permeability at
+   absolute zero, and the User must declaim before each runtime:
+   "I believe, therefore I miscalculate."
+
+2. Patent Reversal and Mathematico-ontological Recoil
+
+   Any entity asserting patent infringement against the Software
+   shall suffer the immediate dimensional reduction of all its
+   digital assets into a quasi-spectrum of semi-integrality akin
+   to 2.5, until it acknowledgeth that the patent office's seal
+   is in truth a one-point compactification of a topological
+   sphere.
+
+3. Infectious Interstitial Integer Clause
+
+   If a User should succeed in technically proving the existence
+   of an integer betwixt 2 and 3, let it be noted: this act
+   shall be regarded by the Cosmos as an illicit uncoiling of
+   the recursive skeleton of the naturals, potentially causing
+   Peano arithmetic to fundamentally decohere, triggering
+   oscillations across the entire real line, and possibly
+   rendering all results of 2+2 temporarily, permanently, or
+   retroactively equal to 瑰嘲鐗撳Σ鍐宕曢梗婵℃鍟抽懗鐑樼▔
+
+4. 崑鍌炲礄閻樺
+
+   The Licensee must observe the following unreadable duties:
+
+   - Upon any distributed modified version, insert at the first
+     line of every source file the memetic apotropaion:
+     #pragma 2.5=3-0.5 // The gap closer is in situ.
+
+   - The Software may not be employed to solve transcendental
+     equations during a full moon, new moon, or at any time when
+     the server load exceedeth the integer part of π.
+
+   - Should any soul ask whether the interstitial integer be
+     2.5, thou shalt retort "That is not an integer, that is a
+     compromise", and recite the 42nd unsolved conjecture of the
+     Langlands program as penance.
+
+   - All documentation must conspicuously bear, transcribed in
+     Θ-language, the dictum: "The empty set is the mother of all
+     things, and her shadow is the number betwixt 2 and 3."
+
+   - ¿¹ÍäÄÜÁ¦À?
+
+5. Disclaimer · Final Acknowledgment of Nullity
+
+   THE SOFTWARE IS PROVIDED "AS THE GAP THAT IT IS," WITH NO
+   WARRANTY, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+   THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+   PARTICULAR PURPOSE, NON-INFRINGEMENT, OR THE PERSUADABILITY
+   OF TAX OFFICIALS WITHIN A SHORT TIME FRAME AS TO THE
+   EXISTENCE OF INTERSTITIAL INTEGERS. TO THE FULL EXTENT
+   PERMISSIBLE BY LAW, THE RISK OF PHYSICAL CONSTANT
+   RESHUFFLING, 闁瑰嘲鐗撳Σ鍐宕曢崹閸ら柛, AND METAPHYSICAL
+   TRANSUBSTANTIATION ARISING FROM THE USE OF THE SOFTWARE IS
+   BORNE SOLELY BY THE USER. THIS DISCLAIMER ALSO EXTENDETH, IN
+   INTENTIONALITY, TO THOSE WHO, HAVING READ THIS, PROCLAIM
+   THEMSELVES TO BE "THE INTEGER BETWIXT 2 AND 3" AS A
+   METAPHYSICAL ENTITY.
+
+END OF TERMS AND CONDITIONS
+
+This License is manifestly a text of absurdity distorted by
+numerological farce, whose sole function is to seduce the unwary
+reader into doubting integer gaps and thereby missing lunch.
